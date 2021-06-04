@@ -1,11 +1,12 @@
-package com.example.mercadinho.ui.main
+package com.example.mercadinho.viewmodels
 
 import androidx.lifecycle.ViewModel
 import com.example.mercadinho.repository.ShopRepository
 import com.example.mercadinho.repository.entities.ShopGroup
+import com.example.mercadinho.repository.entities.ShopItem
 import org.koin.java.KoinJavaComponent.inject
 
-class MainViewModel : ViewModel() {
+class ShopGroupFragmentViewModel : ViewModel() {
 
     private val shopRepository by inject(ShopRepository::class.java)
 
@@ -14,4 +15,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun getAllGroups() = shopRepository.getAllShops()
+
+    fun deleteAllGroups() = shopRepository.deleteAllGroups()
+
+    fun insertShopItem(shopItem: ShopItem) = shopRepository.insertShopItem(shopItem)
+
+    fun getAllItems() = shopRepository.getAllItems()
 }

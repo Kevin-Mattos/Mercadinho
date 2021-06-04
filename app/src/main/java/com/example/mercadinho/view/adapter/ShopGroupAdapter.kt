@@ -1,21 +1,21 @@
-package com.example.mercadinho.ui.adapter
+package com.example.mercadinho.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.mercadinho.databinding.ShopGroupItemViewBinding
+import com.example.mercadinho.databinding.ShopGroupItemviewBinding
 import com.example.mercadinho.repository.entities.ShopGroup
 
 class ShopGroupAdapter (val context: Context, private val groups: MutableList<ShopGroup> = mutableListOf(), private val actions: GroupAction) :
         RecyclerView.Adapter<ShopGroupAdapter.ViewHolder>() {
 
         interface GroupAction {
-            fun onClick(groupId: Long): String
+            fun onClick(groupId: Long)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val binding = ShopGroupItemViewBinding.inflate(LayoutInflater.from(context), parent, false)
+            val binding = ShopGroupItemviewBinding.inflate(LayoutInflater.from(context), parent, false)
             return ViewHolder(binding, actions)
         }
 
@@ -32,11 +32,14 @@ class ShopGroupAdapter (val context: Context, private val groups: MutableList<Sh
             notifyDataSetChanged()
         }
 
-        class ViewHolder(private val mBinding: ShopGroupItemViewBinding, private val actions: GroupAction) :
+        class ViewHolder(private val mBinding: ShopGroupItemviewBinding, private val actions: GroupAction) :
             RecyclerView.ViewHolder(mBinding.root) {
-            fun bind(movie: ShopGroup) {
+            fun bind(shopGroup: ShopGroup) {
                 with(mBinding) {
-                    textView.text = movie.name
+                    groupName.text = shopGroup.name
+                    root.setOnClickListener {
+                        actions.onClick(shopGroup.id)
+                    }
                 }
             }
         }

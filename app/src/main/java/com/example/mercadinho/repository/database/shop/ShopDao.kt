@@ -24,5 +24,14 @@ interface ShopDao {
     @Insert
     fun insertShopItem(shopItem: ShopItem)
 
+    @Query("DELETE FROM ShopGroup")
+    fun deleteAllGroups()
+
+    @Query("DELETE FROM ShopItem where groupId = :groupId")
+    fun deleteAllItemsFromGroup(groupId: Long)
+
+    @Query("SELECT * FROM shopitem")
+    fun getAllItems(): LiveData<List<ShopItem>>
+
 
 }

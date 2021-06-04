@@ -14,7 +14,7 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         )]
 )
-data class ShopItem(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "item_id") val id: Long, val groupId: Long, @ColumnInfo(name = "name") val name: String) {
+data class ShopItem(@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "item_id") val id: Long, val groupId: Long, @ColumnInfo(name = "name") val name: String,@ColumnInfo(name = "bought") var bought: Boolean) {
     override fun toString(): String {
         return "ShopItem(id=$id, groupId=$groupId, name='$name')"
     }
