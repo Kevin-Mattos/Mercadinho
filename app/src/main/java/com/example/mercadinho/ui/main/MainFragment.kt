@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.example.mercadinho.R
+import com.example.mercadinho.databinding.MainActivityBinding
+import com.example.mercadinho.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
 
@@ -14,11 +17,18 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+    val mBinding by lazy {
+        MainFragmentBinding.inflate(layoutInflater)
+    }
+
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application).create(MainViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        mBinding.message.text = "texto"
+        return mBinding.root
     }
 
 
