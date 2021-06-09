@@ -9,7 +9,7 @@ class ShopDatabaseManager(private val shopDao: ShopDao) {
     fun getAllShops(): LiveData<List<ShopGroup>> = shopDao.getAllGroups()
 
     fun insertShopGroup(shopGroup: ShopGroup) {
-            shopDao.insertShopGroup(shopGroup)
+        shopDao.insertShopGroup(shopGroup)
     }
 
     fun deleteAllGroups() {
@@ -22,5 +22,8 @@ class ShopDatabaseManager(private val shopDao: ShopDao) {
 
     fun getAllItems(): LiveData<List<ShopItem>> = shopDao.getAllItems()
 
-    fun getItemByGroupId(groupId: Long): LiveData<List<ShopItem>> = shopDao.getAllItemsFromGroup(groupId)
+    fun getItemByGroupId(groupId: Long): LiveData<List<ShopItem>> =
+        shopDao.getAllItemsFromGroup(groupId)
+
+    fun updateAllShopItens(shopItems: List<ShopItem>) = shopDao.insertAllItens(shopItems)
 }

@@ -8,11 +8,17 @@ import kotlinx.coroutines.*
 
 class ShopRepository(private val dbManager: ShopDatabaseManager) {
 
-    fun getAllShops(): LiveData<List<ShopGroup>> = dbManager.getAllShops()
+    fun getAllShops(callBack: (LiveData<List<ShopGroup>>) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val groups = dbManager.getAllShops()
+            withContext(Dispatchers.Main) {
+                callBack(groups)
+            }
+        }
+    }
 
     fun insertShopGroup(shopGroup: ShopGroup) {
         CoroutineScope(Dispatchers.IO).launch {
-            //delay(2000)
             dbManager.insertShopGroup(shopGroup)
         }
     }
@@ -24,22 +30,32 @@ class ShopRepository(private val dbManager: ShopDatabaseManager) {
     }
 
     fun insertShopItem(shopItem: ShopItem) {
-
         CoroutineScope(Dispatchers.IO).launch {
-//            delay(2000)
             dbManager.insertShopItem(shopItem)
-
         }
     }
 
-    fun getAllItems(): LiveData<List<ShopItem>> = dbManager.getAllItems()
+    fun getAllItems(callBack: (LiveData<List<ShopItem>>) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val itens = dbManager.getAllItems()
+            withContext(Dispatchers.Main) {
+                callBack(itens)
+            }
+        }
+    }
 
-    fun getItemByGroupId(groupId: Long) = dbManager.getItemByGroupId(groupId)
+    fun getItemByGroupId(groupId: Long, callBack: (LiveData<List<ShopItem>>) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val itens = dbManager.getItemByGroupId(groupId)
+            withContext(Dispatchers.Main) {
+                callBack(itens)
+            }
+        }
+    }
 
     fun updateAllShopItens(shopItems: List<ShopItem>) {
         CoroutineScope(Dispatchers.IO).launch {
             dbManager.updateAllShopItens(shopItems)
         }
     }
-
 }

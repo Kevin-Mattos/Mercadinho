@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
 
     fun replaceThis(groupId: Long) {
         val frag = ShopItemFragment.newInstance()
-
         frag.arguments = Bundle()
         frag.arguments?.putLong(GROUP_ID_KEY, groupId)
 

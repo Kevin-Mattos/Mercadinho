@@ -1,24 +1,44 @@
 package com.example.mercadinho.viewmodels
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
 import com.example.mercadinho.repository.ShopRepository
 import com.example.mercadinho.repository.entities.ShopGroup
-import com.example.mercadinho.repository.entities.ShopItem
+import com.example.mercadinho.util.BaseViewModel
 import org.koin.java.KoinJavaComponent.inject
 
-class ShopGroupFragmentViewModel : ViewModel() {
+
+sealed class ShopGroupListFragmentState {
+    data class GetAllGroups(val groupList: LiveData<List<ShopGroup>>): ShopGroupListFragmentState()
+}
+
+sealed class ShopGroupListFragmentIntent {
+    object GetAllGroups: ShopGroupListFragmentIntent()
+    data class OnAdded(val shopGroup: ShopGroup): ShopGroupListFragmentIntent()
+}
+
+class ShopGroupFragmentViewModel : BaseViewModel<ShopGroupListFragmentIntent, ShopGroupListFragmentState>() {
 
     private val shopRepository by inject(ShopRepository::class.java)
 
-    fun insertShopGroup(shopGroup: ShopGroup) {
+    override fun handle(intent: ShopGroupListFragmentIntent) {
+        when(intent) {
+            is ShopGroupListFragmentIntent.GetAllGroups -> getAllShopGroups()
+            is ShopGroupListFragmentIntent.OnAdded -> insertShopGroup(intent.shopGroup)
+        }
+    }
+    private fun getAllShopGroups() {
+        shopRepository.getAllShops {
+            state.value = ShopGroupListFragmentState.GetAllGroups(it)
+        }
+    }
+
+    private fun insertShopGroup(shopGroup: ShopGroup) {
         shopRepository.insertShopGroup(shopGroup)
     }
 
-    fun getAllGroups() = shopRepository.getAllShops()
+//    fun getAllGroups() = shopRepository.getAllShops()
 
     fun deleteAllGroups() = shopRepository.deleteAllGroups()
 
-    fun insertShopItem(shopItem: ShopItem) = shopRepository.insertShopItem(shopItem)
-
-    fun getAllItems() = shopRepository.getAllItems()
+//    fun insertShopItem(shopItem: ShopItem) = shopRepository.insertShopItem(shopItem)
 }
