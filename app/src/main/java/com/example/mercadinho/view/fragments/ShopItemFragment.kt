@@ -28,25 +28,10 @@ import com.example.mercadinho.viewmodels.ShopItemListFragmentState
 class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.FabAction {
 
     private val args: ShopItemFragmentArgs by navArgs()
-
-    private val mBinding by lazy {
-        MainFragmentBinding.inflate(layoutInflater)
-    }
-
-    private val mAdapter by lazy {
-        ShopItemAdapter(mMainActivity.applicationContext, actions = this)
-    }
-
-    private val mMainActivity : MainActivity by lazy {
-        activity as MainActivity
-    }
-
+    private val mBinding by lazy { MainFragmentBinding.inflate(layoutInflater) }
+    private val mAdapter by lazy { ShopItemAdapter(mMainActivity.applicationContext, actions = this) }
+    private val mMainActivity : MainActivity by lazy { activity as MainActivity }
     private val mViewModel: ShopItemFragmentViewModel by viewModels()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mMainActivity.fabCallback = this::fabClicked
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +54,11 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     override fun onPause() {
         super.onPause()
         mViewModel.handle(ShopItemListFragmentIntent.UpdateItens(mAdapter.items))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMainActivity.fabCallback = this::fabClicked
     }
 
     override fun onClick(item: ShopItem) {

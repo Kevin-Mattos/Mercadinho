@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         val listerner = NavController.OnDestinationChangedListener { controller, destination, arguments ->
             title = destination.label
         }
-
         findNavController(R.id.nav_host_fragment_container).addOnDestinationChangedListener(listerner)
 
     }
@@ -44,7 +43,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFab() {
         mBinding.fab.setOnClickListener {
-            Toast.makeText(applicationContext, "eaeaea", Toast.LENGTH_LONG).show()
             fabCallback?.invoke()
         }
     }
