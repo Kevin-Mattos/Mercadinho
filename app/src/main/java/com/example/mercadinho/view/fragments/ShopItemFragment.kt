@@ -1,15 +1,18 @@
 package com.example.mercadinho.view.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.example.mercadinho.MainActivity
 import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.MainFragmentBinding
@@ -22,51 +25,40 @@ import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemListFragmentState
 
-
-const val GROUP_ID_KEY = "KEY:GROUP_ID"
 class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.FabAction {
 
-    companion object {
-        fun newInstance() = ShopItemFragment()
-    }
-
-    private val mBinding by lazy {
-        MainFragmentBinding.inflate(layoutInflater)
-    }
-
-    private val mAdapter by lazy {
-        ShopItemAdapter(mMainActivity.applicationContext, actions = this)
-    }
-
-    private val mMainActivity : MainActivity by lazy {
-        activity as MainActivity
-    }
-
-    private val mViewModel: ShopItemFragmentViewModel by lazy {
-        ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application).create(
-            ShopItemFragmentViewModel::class.java)
-    }
+    private val args: ShopItemFragmentArgs by navArgs()
+    private val mBinding by lazy { MainFragmentBinding.inflate(layoutInflater) }
+    private val mAdapter by lazy { ShopItemAdapter(mMainActivity.applicationContext, actions = this) }
+    private val mMainActivity : MainActivity by lazy { activity as MainActivity }
+    private val mViewModel: ShopItemFragmentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            mViewModel.groupId = it.getLong(GROUP_ID_KEY, -1)
-        }
+        mViewModel.groupId = args.groupId
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+        return mBinding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupObserver()
         //mViewModel.deleteAllGroups()
         setupAdapter()
         mViewModel.handle(ShopItemListFragmentIntent.GetAllItensById)
-        return mBinding.root
     }
 
     override fun onPause() {
         super.onPause()
         mViewModel.handle(ShopItemListFragmentIntent.UpdateItens(mAdapter.items))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mMainActivity.fabCallback = this::fabClicked
     }
 
     override fun onClick(item: ShopItem) {

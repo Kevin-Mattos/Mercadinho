@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_outer_padding">15dp</dimen>
+    <dimen name="dialog_input_text_padding">6dp</dimen>
+    <dimen name="item_view_height">50dp</dimen>
+    <dimen name="item_view_title_margin">16dp</dimen>
+    <dimen name="item_view_text_size">24sp</dimen>
+    <dimen name="item_view_cardView_elevation">16dp</dimen>
+</resources>

@@ -55,7 +55,7 @@ class ShopRepository(private val dbManager: ShopDatabaseManager) {
 
     fun updateAllShopItens(shopItems: List<ShopItem>) {
         CoroutineScope(Dispatchers.IO).launch {
-            dbManager.updateAllShopItens(shopItems)
+            dbManager.updateAllShopItems(shopItems)
         }
     }
 

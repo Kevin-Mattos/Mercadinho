@@ -1,14 +1,12 @@
 package com.example.mercadinho
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.fragment.app.FragmentTransaction
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.example.mercadinho.databinding.MainActivityBinding
-import com.example.mercadinho.view.extensions.makeTransaction
-import com.example.mercadinho.view.fragments.GROUP_ID_KEY
-import com.example.mercadinho.view.fragments.ShopGroupFragment
-import com.example.mercadinho.view.fragments.ShopItemFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,17 +14,27 @@ class MainActivity : AppCompatActivity() {
         fun fabClicked()
     }
 
+    var fabCallback: (() -> Unit)? = null
+
     private val mBinding by lazy { setupBinding() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(mBinding.container.id, ShopGroupFragment.newInstance())
-                .commitNow()
-        }
+    }
+
+    override fun onStart() {
+        super.onStart()
         setupFab()
+        addDestinationChangeListener()
+    }
+
+    private fun addDestinationChangeListener() {
+        val listerner = NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            title = destination.label
+        }
+        findNavController(R.id.nav_host_fragment_container).addOnDestinationChangedListener(listerner)
+
     }
 
     private fun setupBinding(): MainActivityBinding {
@@ -35,21 +43,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFab() {
         mBinding.fab.setOnClickListener {
-            Toast.makeText(applicationContext, "eaeaea", Toast.LENGTH_LONG).show()
-            val frag = supportFragmentManager.findFragmentById(mBinding.container.id)
-            if (frag != null && frag is FabAction) {
-                frag.fabClicked()
-            }
-        }
-    }
-
-    fun replaceThis(groupId: Long) {
-        val frag = ShopItemFragment.newInstance()
-        frag.arguments = Bundle()
-        frag.arguments?.putLong(GROUP_ID_KEY, groupId)
-
-        makeTransaction {
-            replace(mBinding.container.id, frag)
+            fabCallback?.invoke()
         }
     }
 }
