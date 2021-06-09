@@ -26,4 +26,8 @@ class ShopDatabaseManager(private val shopDao: ShopDao) {
         shopDao.getAllItemsFromGroup(groupId)
 
     fun updateAllShopItens(shopItems: List<ShopItem>) = shopDao.insertAllItens(shopItems)
+
+    fun deleteItem(shopItem: ShopItem) = shopDao.removeItem(shopItem)
+
+    fun removeGroup(group: ShopGroup) = shopDao.deleteGroup(group)
 }

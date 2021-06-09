@@ -58,4 +58,16 @@ class ShopRepository(private val dbManager: ShopDatabaseManager) {
             dbManager.updateAllShopItens(shopItems)
         }
     }
+
+    fun removeItem(shopItem: ShopItem) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dbManager.deleteItem(shopItem)
+        }
+    }
+
+    fun removeGroup(group: ShopGroup) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dbManager.removeGroup(group)
+        }
+    }
 }

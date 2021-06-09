@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mercadinho.databinding.ShopItemItemviewBinding
 import com.example.mercadinho.repository.entities.ShopItem
 
-class ShopItemAdapter (val context: Context, val items: MutableList<ShopItem> = mutableListOf(), private val actions: ItemAction) :
+class ShopItemAdapter (private val context: Context, val items: MutableList<ShopItem> = mutableListOf(), private val actions: ItemAction) :
     RecyclerView.Adapter<ShopItemAdapter.ViewHolder>() {
 
     interface ItemAction {
@@ -41,7 +41,9 @@ class ShopItemAdapter (val context: Context, val items: MutableList<ShopItem> = 
                 bought.isChecked = shopItem.bought
                 bought.setOnClickListener {
                     shopItem.bought = bought.isChecked
-                    //actions.onClick(shopItem)
+                }
+                root.setOnClickListener {
+                    actions.onClick(shopItem)
                 }
             }
         }

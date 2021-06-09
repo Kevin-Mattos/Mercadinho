@@ -70,7 +70,7 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     }
 
     override fun onClick(item: ShopItem) {
-        //mViewModel.handle(ShopItemListFragmentIntent.OnAdded(item))
+        mViewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
     }
 
     override fun fabClicked() {

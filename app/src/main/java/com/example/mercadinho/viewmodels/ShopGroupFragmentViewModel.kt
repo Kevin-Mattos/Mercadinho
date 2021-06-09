@@ -14,6 +14,7 @@ sealed class ShopGroupListFragmentState {
 sealed class ShopGroupListFragmentIntent {
     object GetAllGroups: ShopGroupListFragmentIntent()
     data class OnAdded(val shopGroup: ShopGroup): ShopGroupListFragmentIntent()
+    data class RemoveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
 }
 
 class ShopGroupFragmentViewModel : BaseViewModel<ShopGroupListFragmentIntent, ShopGroupListFragmentState>() {
@@ -24,8 +25,14 @@ class ShopGroupFragmentViewModel : BaseViewModel<ShopGroupListFragmentIntent, Sh
         when(intent) {
             is ShopGroupListFragmentIntent.GetAllGroups -> getAllShopGroups()
             is ShopGroupListFragmentIntent.OnAdded -> insertShopGroup(intent.shopGroup)
+            is ShopGroupListFragmentIntent.RemoveGroup -> removeGroup(intent.group)
         }
     }
+
+    private fun removeGroup(group: ShopGroup) {
+        shopRepository.removeGroup(group)
+    }
+
     private fun getAllShopGroups() {
         shopRepository.getAllShops {
             state.value = ShopGroupListFragmentState.GetAllGroups(it)

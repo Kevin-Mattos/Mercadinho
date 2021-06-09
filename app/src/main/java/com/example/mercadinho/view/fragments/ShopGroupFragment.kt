@@ -56,6 +56,10 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
         mMainActivity.replaceThis(groupId)
     }
 
+    override fun onLongClick(group: ShopGroup) {
+        mViewModel.handle(ShopGroupListFragmentIntent.RemoveGroup(group))
+    }
+
     override fun fabClicked() {
         val binding = CreateCustomDialogBinding.inflate(mMainActivity.layoutInflater)
 
@@ -73,7 +77,6 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
                 mViewModel.handle(ShopGroupListFragmentIntent.OnAdded(ShopGroup(0, binding.inputName.text.toString() )))
                 dialog.cancel()
             }
-
         }
 
         dialog.show()
