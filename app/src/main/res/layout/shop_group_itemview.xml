@@ -3,20 +3,20 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="16dp"
+    android:elevation="@dimen/item_view_cardView_elevation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="@dimen/item_view_height">
         <TextView
             android:id="@+id/group_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:textSize="24sp"
+            android:layout_marginStart="@dimen/item_view_title_margin"
+            android:textSize="@dimen/item_view_text_size"
             android:maxLines="1"
             android:ellipsize="end"
             tools:text="@tools:sample/lorem"/>

@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp">
+        android:padding="@dimen/dialog_outer_padding">
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -13,8 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nome"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
+            android:paddingStart="@dimen/dialog_input_text_padding"
+            android:paddingEnd="@dimen/dialog_input_text_padding"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">

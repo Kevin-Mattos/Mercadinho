@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Mercadinho</string>
+    <string name="label_group">Grupo</string>
+    <string name="label_item">Item</string>
 </resources>
