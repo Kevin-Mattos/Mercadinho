@@ -1,19 +1,9 @@
 package com.example.mercadinho.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.example.mercadinho.repository.database.shop.ShopDatabaseManager
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
-import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subscribers.DisposableSubscriber
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
-import java.util.concurrent.Flow
+import io.reactivex.rxjava3.core.Single
 
 class ShopRepository(private val dbManager: ShopDatabaseManager) {
 

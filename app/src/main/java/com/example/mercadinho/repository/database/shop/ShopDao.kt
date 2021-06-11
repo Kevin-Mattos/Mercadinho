@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 
 
 @Dao
@@ -30,10 +30,10 @@ interface ShopDao {
     @Query("DELETE FROM ShopItem where groupId = :groupId")
     fun deleteAllItemsFromGroup(groupId: Long): Completable
 
-    @Query("SELECT * FROM shopitem")
+    @Query("SELECT * FROM ShopItem")
     fun getAllItems(): LiveData<List<ShopItem>>
 
-    @Query("SELECT * FROM shopitem where groupId = :shopGroupId")
+    @Query("SELECT * FROM ShopItem where groupId = :shopGroupId")
     fun getAllItemsFromGroup(shopGroupId: Long): Flowable<List<ShopItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

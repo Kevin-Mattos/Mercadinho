@@ -1,11 +1,7 @@
 package com.example.mercadinho.repository.database.shop
 
-import androidx.lifecycle.LiveData
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
-import io.reactivex.Completable
-import io.reactivex.Flowable
-import io.reactivex.Single
 
 class ShopDatabaseManager(private val shopDao: ShopDao) {
 
