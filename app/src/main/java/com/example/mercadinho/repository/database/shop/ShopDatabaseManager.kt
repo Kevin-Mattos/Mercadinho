@@ -3,27 +3,25 @@ package com.example.mercadinho.repository.database.shop
 import androidx.lifecycle.LiveData
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
 
 class ShopDatabaseManager(private val shopDao: ShopDao) {
 
-    fun getAllShops(): LiveData<List<ShopGroup>> = shopDao.getAllGroups()
+    fun getAllShops() = shopDao.getAllGroups()
 
-    fun insertShopGroup(shopGroup: ShopGroup) {
-        shopDao.insertShopGroup(shopGroup)
-    }
+    fun insertShopGroup(shopGroup: ShopGroup) = shopDao.insertShopGroup(shopGroup)
 
-    fun deleteAllGroups() {
-        shopDao.deleteAllGroups()
-    }
+    fun deleteAllGroups() = shopDao.deleteAllGroups()
 
-    fun insertShopItem(shopItem: ShopItem) {
-        shopDao.insertShopItem(shopItem)
-    }
+    fun insertShopItem(shopItem: ShopItem) = shopDao.insertShopItem(shopItem)
 
-    fun getAllItems(): LiveData<List<ShopItem>> = shopDao.getAllItems()
+    fun getAllItems() = shopDao.getAllItems()
 
-    fun getItemByGroupId(groupId: Long): LiveData<List<ShopItem>> =
-        shopDao.getAllItemsFromGroup(groupId)
+    fun getAllGroups2(query: String) = shopDao.getAllGroups2(query)
+
+    fun getItemByGroupId(groupId: Long) = shopDao.getAllItemsFromGroup(groupId)
 
     fun updateAllShopItems(shopItems: List<ShopItem>) = shopDao.insertAllItens(shopItems)
 

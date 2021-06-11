@@ -1,73 +1,40 @@
 package com.example.mercadinho.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.mercadinho.repository.database.shop.ShopDatabaseManager
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
-import kotlinx.coroutines.*
+import io.reactivex.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observers.DisposableCompletableObserver
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subscribers.DisposableSubscriber
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
+import java.util.concurrent.Flow
 
 class ShopRepository(private val dbManager: ShopDatabaseManager) {
 
-    fun getAllShops(callBack: (LiveData<List<ShopGroup>>) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val groups = dbManager.getAllShops()
-            withContext(Dispatchers.Main) {
-                callBack(groups)
-            }
-        }
-    }
+    fun getAllShops() = dbManager.getAllShops()
 
-    fun insertShopGroup(shopGroup: ShopGroup) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbManager.insertShopGroup(shopGroup)
-        }
-    }
+    fun insertShopGroup(shopGroup: ShopGroup) = dbManager.insertShopGroup(shopGroup)
 
-    fun deleteAllGroups() {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbManager.deleteAllGroups()
-        }
-    }
+    fun deleteAllGroups() = dbManager.deleteAllGroups()
 
-    fun insertShopItem(shopItem: ShopItem) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbManager.insertShopItem(shopItem)
-        }
-    }
+    fun insertShopItem(shopItem: ShopItem) = dbManager.insertShopItem(shopItem)
 
-    fun getAllItems(callBack: (LiveData<List<ShopItem>>) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val itens = dbManager.getAllItems()
-            withContext(Dispatchers.Main) {
-                callBack(itens)
-            }
-        }
-    }
+    fun getAllItems() = dbManager.getAllItems()
 
-    fun getItemByGroupId(groupId: Long, callBack: (LiveData<List<ShopItem>>) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val itens = dbManager.getItemByGroupId(groupId)
-            withContext(Dispatchers.Main) {
-                callBack(itens)
-            }
-        }
-    }
+    fun getItemByGroupId(groupId: Long) = dbManager.getItemByGroupId(groupId)
 
-    fun updateAllShopItens(shopItems: List<ShopItem>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbManager.updateAllShopItems(shopItems)
-        }
-    }
+    fun updateAllShopItens(shopItems: List<ShopItem>) = dbManager.updateAllShopItems(shopItems)
 
-    fun removeItem(shopItem: ShopItem) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbManager.deleteItem(shopItem)
-        }
-    }
+    fun removeItem(shopItem: ShopItem) = dbManager.deleteItem(shopItem)
 
-    fun removeGroup(group: ShopGroup) {
-        CoroutineScope(Dispatchers.IO).launch {
-            dbManager.removeGroup(group)
-        }
-    }
+    fun removeGroup(group: ShopGroup) = dbManager.removeGroup(group)
+
+    fun getAllShopsRxJava(query: String): Single<List<ShopGroup>> = dbManager.getAllGroups2(query)
+
 }

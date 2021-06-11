@@ -1,26 +1,31 @@
 package com.example.mercadinho.viewmodels
 
-import androidx.lifecycle.LiveData
 import com.example.mercadinho.repository.ShopRepository
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.util.BaseViewModel
+import com.example.mercadinho.util.completableSubscribe
+import com.example.mercadinho.util.flowableSubscribe
+import com.example.mercadinho.util.singleSubscribe
 import org.koin.java.KoinJavaComponent.inject
-import java.lang.RuntimeException
 
 
 sealed class ShopGroupListFragmentState {
-    data class GetAllGroups(val groupList: LiveData<List<ShopGroup>>) : ShopGroupListFragmentState()
-    data class OnAddedError(val message: String, val code: AddErrorCodes) : ShopGroupListFragmentState() {
+    data class GetAllGroups(val groupList: List<ShopGroup>) : ShopGroupListFragmentState()
+    data class OnAddedError(val message: String, val code: AddErrorCodes) :
+        ShopGroupListFragmentState() {
         enum class AddErrorCodes(val code: Int) {
             INVALID_NAME(1)
         }
     }
+
+    data class UpdateGroups(val groupList: List<ShopGroup>) : ShopGroupListFragmentState()
 }
 
 sealed class ShopGroupListFragmentIntent {
     object GetAllGroups : ShopGroupListFragmentIntent()
     data class OnAdded(val shopGroup: ShopGroup) : ShopGroupListFragmentIntent()
     data class RemoveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
+    data class SearchGroup(val query: String) : ShopGroupListFragmentIntent()
 }
 
 class ShopGroupFragmentViewModel :
@@ -33,31 +38,46 @@ class ShopGroupFragmentViewModel :
             is ShopGroupListFragmentIntent.GetAllGroups -> getAllShopGroups()
             is ShopGroupListFragmentIntent.OnAdded -> insertShopGroup(intent.shopGroup)
             is ShopGroupListFragmentIntent.RemoveGroup -> removeGroup(intent.group)
+            is ShopGroupListFragmentIntent.SearchGroup -> queryGroups(intent.query)
         }
+    }
+
+    private fun queryGroups(query: String) {
+        disposable.add(
+            shopRepository.getAllShopsRxJava(query).singleSubscribe(onSuccess = { list ->
+                state.value = ShopGroupListFragmentState.UpdateGroups(list)
+            })
+        )
     }
 
     private fun removeGroup(group: ShopGroup) {
-        shopRepository.removeGroup(group)
+        disposable.add(shopRepository.removeGroup(group).completableSubscribe())
     }
 
     private fun getAllShopGroups() {
-        shopRepository.getAllShops {
-            state.value = ShopGroupListFragmentState.GetAllGroups(it)
-        }
+        disposable.add(
+            shopRepository.getAllShops().flowableSubscribe(
+                onNext = { groups ->
+                    state.value = ShopGroupListFragmentState.GetAllGroups(groups)
+                })
+        )
     }
 
     private fun insertShopGroup(shopGroup: ShopGroup) {
         try {
             shopGroup.validate()
-            shopRepository.insertShopGroup(shopGroup)
+            disposable.add(shopRepository.insertShopGroup(shopGroup).completableSubscribe())
         } catch (e: RuntimeException) {
-            state.value = ShopGroupListFragmentState.OnAddedError(e.message?:"Unexpected failure", ShopGroupListFragmentState.OnAddedError.AddErrorCodes.INVALID_NAME)
+            state.value = ShopGroupListFragmentState.OnAddedError(
+                e.message ?: "Unexpected failure",
+                ShopGroupListFragmentState.OnAddedError.AddErrorCodes.INVALID_NAME
+            )
         }
     }
 
 //    fun getAllGroups() = shopRepository.getAllShops()
 
-    fun deleteAllGroups() = shopRepository.deleteAllGroups()
+    fun deleteAllGroups() = disposable.add(shopRepository.deleteAllGroups().completableSubscribe())
 
 //    fun insertShopItem(shopItem: ShopItem) = shopRepository.insertShopItem(shopItem)
 }

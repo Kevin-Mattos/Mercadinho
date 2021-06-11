@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -8,15 +8,21 @@
     android:layout_height="match_parent"
     tools:context=".view.fragments.ShopGroupFragment">
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/group_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/myRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="12"
+        android:layout_below="@id/group_search_view"
         tools:listitem="@layout/shop_group_itemview" />
 
 
-</FrameLayout>
+</RelativeLayout>
 
 </layout>

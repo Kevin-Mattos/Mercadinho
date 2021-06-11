@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.mercadinho.MainActivity
@@ -17,6 +16,7 @@ import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.MainFragmentBinding
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.view.adapter.ShopGroupAdapter
+import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.view.extensions.showToast
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
@@ -41,6 +41,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
         observeGroups()
         mViewModel.handle(ShopGroupListFragmentIntent.GetAllGroups)
         setupAdapter()
+        setupSearch()
     }
 
     override fun onResume() {
@@ -87,6 +88,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             when(it) {
                 is ShopGroupListFragmentState.GetAllGroups -> updateGroups(it.groupList)
                 is ShopGroupListFragmentState.OnAddedError -> showError(it.message, it.code)
+                is ShopGroupListFragmentState.UpdateGroups -> mAdapter.update(it.groupList)
             }
         })
     }
@@ -97,12 +99,28 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             showToast(getString(R.string.error_group_invalid_name))
     }
 
-    private fun updateGroups(groupList: LiveData<List<ShopGroup>>) {
-        groupList.removeObservers(viewLifecycleOwner)
-        groupList.observe(viewLifecycleOwner) {
-            mAdapter.update(it)
-        }
+    private fun updateGroups(groupList: List<ShopGroup>) {
+            mAdapter.update(groupList)
     }
+
+    private fun setupSearch() {
+        mBinding.groupSearchView.addTextListenter(
+            onQuerySubmit = { query ->
+                Log.d("onQueryTextSubmit", "$query")
+                //query?.let {
+                    mViewModel.handle(ShopGroupListFragmentIntent.SearchGroup(query?:""))
+              //  }
+
+            },
+            onTextChange = { text ->
+                Log.d("onTextChange", "$text")
+                text?.let {
+
+                }
+            }
+        )
+    }
+
 
     companion object{
         const val TAG = "ShopGroupFragment"

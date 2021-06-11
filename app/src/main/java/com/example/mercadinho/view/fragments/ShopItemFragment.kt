@@ -94,15 +94,8 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     private fun setupObserver() {
         mViewModel.state.observe(viewLifecycleOwner) {
             when (it) {
-                is ShopItemListFragmentState.GetAllItensById -> observeItens(it.shopItemList)
+                is ShopItemListFragmentState.GetAllItensById -> mAdapter.update(it.shopItemList)
             }
-        }
-    }
-
-    private fun observeItens(shopItemList: LiveData<List<ShopItem>>) {
-        shopItemList.removeObservers(viewLifecycleOwner)
-        shopItemList.observe(viewLifecycleOwner) {
-            mAdapter.update(it)
         }
     }
 }
