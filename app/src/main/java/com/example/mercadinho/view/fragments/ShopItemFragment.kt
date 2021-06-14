@@ -24,7 +24,9 @@ import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemListFragmentState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.FabAction {
 
     private val args: ShopItemFragmentArgs by navArgs()

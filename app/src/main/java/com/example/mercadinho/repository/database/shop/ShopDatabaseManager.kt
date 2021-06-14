@@ -2,8 +2,9 @@ package com.example.mercadinho.repository.database.shop
 
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
+import javax.inject.Inject
 
-class ShopDatabaseManager(private val shopDao: ShopDao) {
+class ShopDatabaseManager @Inject constructor(private val shopDao: ShopDao) {
 
     fun getAllShops() = shopDao.getAllGroups()
 

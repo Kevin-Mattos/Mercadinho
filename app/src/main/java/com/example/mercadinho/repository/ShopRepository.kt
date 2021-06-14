@@ -4,8 +4,9 @@ import com.example.mercadinho.repository.database.shop.ShopDatabaseManager
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
 import io.reactivex.rxjava3.core.Single
+import javax.inject.Inject
 
-class ShopRepository(private val dbManager: ShopDatabaseManager) {
+class ShopRepository @Inject constructor(private val dbManager: ShopDatabaseManager) {
 
     fun getAllShops() = dbManager.getAllShops()
 

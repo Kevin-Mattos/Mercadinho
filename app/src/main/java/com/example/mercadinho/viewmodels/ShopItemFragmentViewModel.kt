@@ -5,7 +5,10 @@ import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.completableSubscribe
 import com.example.mercadinho.util.flowableSubscribe
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.koin.java.KoinJavaComponent
+import javax.inject.Inject
 
 sealed class ShopItemListFragmentState {
     data class GetAllItensById(val shopItemList: List<ShopItem>) : ShopItemListFragmentState()
@@ -18,10 +21,9 @@ sealed class ShopItemListFragmentIntent {
     data class RemoveItem(val shopItem: ShopItem) : ShopItemListFragmentIntent()
 }
 
-class ShopItemFragmentViewModel :
+@HiltViewModel
+class ShopItemFragmentViewModel @Inject constructor(private val shopRepository: ShopRepository) :
     BaseViewModel<ShopItemListFragmentIntent, ShopItemListFragmentState>() {
-
-    private val shopRepository by KoinJavaComponent.inject(ShopRepository::class.java)
 
     var groupId = 0L
 

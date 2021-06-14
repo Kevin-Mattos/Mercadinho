@@ -6,8 +6,9 @@ import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.completableSubscribe
 import com.example.mercadinho.util.flowableSubscribe
 import com.example.mercadinho.util.singleSubscribe
-import org.koin.java.KoinJavaComponent.inject
-
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 sealed class ShopGroupListFragmentState {
     data class GetAllGroups(val groupList: List<ShopGroup>) : ShopGroupListFragmentState()
@@ -27,11 +28,12 @@ sealed class ShopGroupListFragmentIntent {
     data class RemoveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
     data class SearchGroup(val query: String) : ShopGroupListFragmentIntent()
 }
-
-class ShopGroupFragmentViewModel :
+@HiltViewModel
+class ShopGroupFragmentViewModel @Inject constructor(private val shopRepository: ShopRepository) :
     BaseViewModel<ShopGroupListFragmentIntent, ShopGroupListFragmentState>() {
 
-    private val shopRepository by inject(ShopRepository::class.java)
+
+
 
     override fun handle(intent: ShopGroupListFragmentIntent) {
         when (intent) {

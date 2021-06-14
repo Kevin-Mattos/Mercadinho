@@ -21,7 +21,9 @@ import com.example.mercadinho.view.extensions.showToast
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopGroupListFragmentState
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity.FabAction {
 
     private val mBinding by lazy { MainFragmentBinding.inflate(layoutInflater) }

@@ -1,12 +1,19 @@
 package com.example.mercadinho.repository.database.shop
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Single
+import javax.inject.Singleton
 
 
 @Dao
@@ -44,4 +51,25 @@ interface ShopDao {
 
     @Delete
     fun removeItem(shopItem: ShopItem): Completable
+}
+
+@InstallIn(SingletonComponent::class)
+@Module
+object DbModule {
+    @Provides
+    fun provideShopDao(appDatabase: ShopDatabase): ShopDao {
+        return appDatabase.shopDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDb(@ApplicationContext context: Context): ShopDatabase =
+        Room.databaseBuilder(
+            context,
+            ShopDatabase::class.java, "shop.db"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
+
 }
