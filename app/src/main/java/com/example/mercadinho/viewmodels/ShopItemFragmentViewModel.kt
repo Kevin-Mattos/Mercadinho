@@ -5,9 +5,7 @@ import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.completableSubscribe
 import com.example.mercadinho.util.flowableSubscribe
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
-import org.koin.java.KoinJavaComponent
 import javax.inject.Inject
 
 sealed class ShopItemListFragmentState {

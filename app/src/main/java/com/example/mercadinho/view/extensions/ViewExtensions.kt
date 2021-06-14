@@ -1,6 +1,5 @@
 package com.example.mercadinho.view.extensions
 
-import android.util.Log
 import androidx.appcompat.widget.SearchView
 
 fun SearchView.addTextListenter(onTextChange: ((String?) -> Unit)? = null, onQuerySubmit: ((String?) -> Unit)? = null) {

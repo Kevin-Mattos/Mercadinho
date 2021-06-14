@@ -55,7 +55,7 @@ dependencies {
     implementation "androidx.room:room-rxjava3:$room_version"
 
     // Koin for Kotlin apps
-    implementation "org.koin:koin-androidx-scope:$koin_version"
+//    implementation "org.koin:koin-androidx-scope:$koin_version"
 
     // navigation
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")

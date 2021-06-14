@@ -6,7 +6,6 @@ import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.completableSubscribe
 import com.example.mercadinho.util.flowableSubscribe
 import com.example.mercadinho.util.singleSubscribe
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

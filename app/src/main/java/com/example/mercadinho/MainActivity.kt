@@ -1,10 +1,8 @@
 package com.example.mercadinho
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.example.mercadinho.databinding.MainActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
