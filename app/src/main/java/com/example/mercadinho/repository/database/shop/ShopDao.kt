@@ -70,6 +70,4 @@ object DbModule {
         )
             .fallbackToDestructiveMigration()
             .build()
-
-
 }

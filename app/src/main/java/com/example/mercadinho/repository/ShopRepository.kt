@@ -1,11 +1,15 @@
 package com.example.mercadinho.repository
 
+import android.util.Log
 import com.example.mercadinho.repository.database.shop.ShopDatabaseManager
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
+import com.example.mercadinho.util.observableSubscribe
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ShopRepository @Inject constructor(private val dbManager: ShopDatabaseManager) {
 
     fun getAllShops() = dbManager.getAllShops()

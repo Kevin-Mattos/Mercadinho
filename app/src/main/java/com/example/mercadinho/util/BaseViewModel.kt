@@ -13,7 +13,7 @@ abstract class BaseViewModel<Intent, State>: ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        disposable.dispose()
+        disposable.clear()
     }
 
 }

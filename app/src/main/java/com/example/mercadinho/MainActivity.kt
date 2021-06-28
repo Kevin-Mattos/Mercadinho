@@ -1,6 +1,7 @@
 package com.example.mercadinho
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -21,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
+
+        Log.d(BuildConfig.FOO_STRING, ": ${BuildConfig.FOO}")
     }
 
     override fun onStart() {
@@ -31,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDestinationChangeListener() {
         val listerner = NavController.OnDestinationChangedListener { controller, destination, arguments ->
-            title = destination.label
+            mBinding.myTitle.text = destination.label
         }
         findNavController(R.id.nav_host_fragment_container).addOnDestinationChangedListener(listerner)
 

@@ -1,5 +1,6 @@
 package com.example.mercadinho.viewmodels
 
+import android.util.Log
 import com.example.mercadinho.repository.ShopRepository
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.util.BaseViewModel

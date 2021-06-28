@@ -16,9 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/item_view_title_margin"
-            android:textSize="@dimen/item_view_text_size"
-            android:maxLines="1"
-            android:ellipsize="end"
+            style="@style/TextItem"
             tools:text="@tools:sample/lorem"/>
 
         <View

@@ -19,6 +19,21 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    flavorDimensions "enviroment"
+
+    productFlavors {
+        demo {
+            buildConfigField "int", "FOO", "1"
+            buildConfigField "String", "FOO_STRING", "\"foo1\""
+        }
+
+        full {
+            buildConfigField "int", "FOO", "2"
+            buildConfigField "String", "FOO_STRING", "\"foo2\""
+        }
+
+    }
+
     buildTypes {
         release {
             minifyEnabled false
