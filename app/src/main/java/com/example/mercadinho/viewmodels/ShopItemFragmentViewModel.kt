@@ -6,6 +6,10 @@ import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.completableSubscribe
 import com.example.mercadinho.util.flowableSubscribe
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

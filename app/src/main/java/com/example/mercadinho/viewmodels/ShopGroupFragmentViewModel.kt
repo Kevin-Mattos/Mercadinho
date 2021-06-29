@@ -7,6 +7,11 @@ import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.completableSubscribe
 import com.example.mercadinho.util.flowableSubscribe
 import com.example.mercadinho.util.singleSubscribe
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -45,6 +50,7 @@ class ShopGroupFragmentViewModel @Inject constructor(private val shopRepository:
         disposable.add(
             shopRepository.getAllShopsRxJava(query).singleSubscribe(onSuccess = { list ->
                 state.value = ShopGroupListFragmentState.UpdateGroups(list)
+                // Write a message to the database
             })
         )
     }
