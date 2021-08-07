@@ -7,29 +7,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.mercadinho.MainActivity
 import com.example.mercadinho.databinding.CreateCustomDialogBinding
-import com.example.mercadinho.databinding.MainFragmentBinding
+import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.view.adapter.ShopItemAdapter
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemListFragmentState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.FabAction {
 
     private val args: ShopItemFragmentArgs by navArgs()
-    private val mBinding by lazy { MainFragmentBinding.inflate(layoutInflater) }
+    private val mBinding by lazy { FragmentShopItemBinding.inflate(layoutInflater) }
     private val mAdapter by lazy { ShopItemAdapter(mMainActivity.applicationContext, actions = this) }
     private val mMainActivity : MainActivity by lazy { activity as MainActivity }
     private val mViewModel: ShopItemFragmentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.groupId = args.groupId
+        mViewModel.groupId = args.groupId?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +61,10 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
         mViewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
     }
 
+    override fun onCheckClick(item: ShopItem) {
+        mViewModel.handle(ShopItemListFragmentIntent.UpdateItem(item))
+    }
+
     override fun fabClicked() {
 
         val binding = CreateCustomDialogBinding.inflate(mMainActivity.layoutInflater)
@@ -73,7 +79,7 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
             }
 
             confirmButton.setOnClickListener {
-                val item = ShopItem(0, mViewModel.groupId, binding.inputName.text.toString(), false)
+                val item = ShopItem( mViewModel.groupId, binding.inputName.text.toString(), false)
                 mViewModel.handle(ShopItemListFragmentIntent.OnAdded(item))
                 dialog.cancel()
             }
@@ -85,8 +91,8 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
         mBinding.myRecyclerView.adapter = mAdapter
     }
 
-    private fun setupObserver() {
-        mViewModel.state.observe(viewLifecycleOwner) {
+    private fun setupObserver() = lifecycleScope.launchWhenStarted {
+        mViewModel.state.collect {
             when (it) {
                 is ShopItemListFragmentState.GetAllItensById -> mAdapter.update(it.shopItemList)
             }

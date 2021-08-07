@@ -9,7 +9,7 @@
         android:id="@+id/shopGroupFragment"
         android:name="com.example.mercadinho.view.fragments.ShopGroupFragment"
         android:label="@string/label_group"
-        tools:layout="@layout/main_fragment">
+        tools:layout="@layout/fragment_shop_group">
         <action
             android:id="@+id/action_shopGroupFragment_to_shopItemFragment"
             app:destination="@id/shopItemFragment"
@@ -19,8 +19,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim">
         <argument
             android:name="group_id"
-            app:argType="long"
-            android:defaultValue="-1L"
+            app:argType="string"
+            android:defaultValue=""
             />
         </action>
     </fragment>
@@ -29,12 +29,12 @@
         android:id="@+id/shopItemFragment"
         android:name="com.example.mercadinho.view.fragments.ShopItemFragment"
         android:label="@string/label_item"
-        tools:layout="@layout/main_fragment">
+        tools:layout="@layout/fragment_shop_group">
 
         <argument
             android:name="group_id"
-            app:argType="long"
-            android:defaultValue="-1L"
+            app:argType="string"
+            android:defaultValue=""
             />
 
     </fragment>

@@ -12,11 +12,12 @@ class ShopItemAdapter (private val context: Context, val items: MutableList<Shop
 
     interface ItemAction {
         fun onClick(item: ShopItem)
+        fun onCheckClick(item: ShopItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ShopItemItemviewBinding.inflate(LayoutInflater.from(context), parent, false)
-        return ViewHolder(binding, actions)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount() = items.size
@@ -32,7 +33,7 @@ class ShopItemAdapter (private val context: Context, val items: MutableList<Shop
         notifyDataSetChanged()
     }
 
-    class ViewHolder(private val mBinding: ShopItemItemviewBinding, private val actions: ItemAction) :
+    inner class ViewHolder(private val mBinding: ShopItemItemviewBinding) :
         RecyclerView.ViewHolder(mBinding.root) {
         fun bind(shopItem: ShopItem) {
 
@@ -41,6 +42,7 @@ class ShopItemAdapter (private val context: Context, val items: MutableList<Shop
                 bought.isChecked = shopItem.bought
                 bought.setOnClickListener {
                     shopItem.bought = bought.isChecked
+                    actions.onCheckClick(shopItem)
                 }
                 root.setOnClickListener {
                     actions.onClick(shopItem)

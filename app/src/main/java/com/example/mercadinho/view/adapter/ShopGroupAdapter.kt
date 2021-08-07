@@ -11,7 +11,7 @@ class ShopGroupAdapter (private val context: Context, private val groups: Mutabl
         RecyclerView.Adapter<ShopGroupAdapter.ViewHolder>() {
 
         interface GroupAction {
-            fun onClick(groupId: Long)
+            fun onClick(groupId: String)
             fun onLongClick(group: ShopGroup)
         }
 
