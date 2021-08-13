@@ -26,11 +26,13 @@ android {
         demo {
             buildConfigField "int", "FOO", "1"
             buildConfigField "String", "FOO_STRING", "\"foo1\""
+            buildConfigField "String", "FIREBASE_REALTIME_URL", "\"https://lista-de-compras-c0412-default-rtdb.firebaseio.com/\""
         }
 
         full {
             buildConfigField "int", "FOO", "2"
             buildConfigField "String", "FOO_STRING", "\"foo2\""
+            buildConfigField "String", "FIREBASE_REALTIME_URL", "\"https://lista-de-compras-c0412-default-rtdb.firebaseio.com/\""
         }
 
     }

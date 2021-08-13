@@ -1,13 +1,14 @@
 package com.example.mercadinho.repository
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import com.example.mercadinho.BuildConfig.FIREBASE_REALTIME_URL
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.repository.entities.teste.Grupos
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,29 +21,19 @@ val GROUP_USER_KEY = "Group-User"
 
 @Singleton
 class ShopRepository @Inject constructor() {
-    val database: FirebaseDatabase
-    val groupsDbref: DatabaseReference
-    val itemsDbref: DatabaseReference
-    val userDbref: DatabaseReference
-    val userGroup: DatabaseReference
-    val groupUser: DatabaseReference
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_URL)
+    private val groupsDbref: DatabaseReference = database.getReference(GROUPS_KEY)
+    private val itemsDbref: DatabaseReference = database.getReference(ITEMS_KEY)
+    val userDbref: DatabaseReference = database.getReference(USER_KEY)
+    private val userGroup: DatabaseReference = database.getReference(USER_GROUP_KEY)
+    val groupUser: DatabaseReference = database.getReference(GROUP_USER_KEY)
     var user: FirebaseUser? = null
 
-    val groups: MutableLiveData<MutableList<Grupos>> =
-        MutableLiveData<MutableList<Grupos>>().apply { value = mutableListOf() }
-
-    init {
-        database =
-            FirebaseDatabase.getInstance("https://lista-de-compras-c0412-default-rtdb.firebaseio.com/")
-        groupsDbref = database.getReference(GROUPS_KEY)
-        itemsDbref = database.getReference(ITEMS_KEY)
-        userDbref = database.getReference(USER_KEY)
-        userGroup = database.getReference(USER_GROUP_KEY)
-        groupUser = database.getReference(GROUP_USER_KEY)
-        teste()
-    }
-
-    fun teste() {
+    fun initStuff(
+        onGroupAdded: ((Grupos) -> Unit),
+        onGroupChanged: ((Grupos) -> Unit),
+        onGroupRemoved: ((String?) -> Unit)
+    ) {
         //watch on user -> groups
         FirebaseAuth.getInstance().addAuthStateListener { auth ->
             auth.currentUser?.let { user ->
@@ -51,91 +42,29 @@ class ShopRepository @Inject constructor() {
                     .childListener(onChildAdded = { snapShot, prv ->
                         watchGroup(snapShot.key!!)
                         val group = snapShot.value as HashMap<String, Any>
-                        groups.add(Grupos(snapShot.key!!, group["name"] as String))//value["name"] as String))
+                        onGroupAdded(Grupos(snapShot.key!!, group["name"] as String))
                     },
                     onChildChanged = { dataSnapshot, s ->
-                        val group = groups.value?.first { dataSnapshot.key == it.groupId }
                         val groupMap = dataSnapshot.value as HashMap<String, Any>
-                        group?.groupName = groupMap["name"] as String
-                        groups.value = groups.value
+                        onGroupChanged(Grupos(dataSnapshot.key!!, groupMap["name"] as String))
                     },
                     onChildRemoved = { dataSnapshot, event ->
-                        groups.remove(dataSnapshot.key!!)
+                        onGroupRemoved(dataSnapshot.key)
                         groupsDbref.child(dataSnapshot.key!!).removeEventListener(event)
                     })
             }
-
-
-
-//                userDbref.child(user.uid).child(GROUPS_KEY)
-//                    .valueEventListener(onSnapshot = { snapShot ->
-//                        snapShot.children.forEach { child ->
-//                            child.key?.let {
-////                                watchGroup(it)
-//                                it
-//                            }
-//                        }
-//                        groupsDbref.childListener(onChildAdded = { snapShot, prv ->
-//                            val value = snapShot.value as Map<String, Any>
-//                            groups?.addAfter(prv, Grupos(snapShot.key!!, value["name"] as String))
-//                        })
-//                    })
-//            }
-        }
-    }
-
-    fun MutableLiveData<MutableList<Grupos>>.addAfter(key: String?, group: Grupos) {
-        val id = value?.indexOfFirst {
-            it.groupId == key
-        }
-        if (id != null) {
-            if (id >= 0)
-                add(id + 1, group)
-            else
-                add(group)
         }
     }
 
     private fun watchGroup(key: String) {
         groupsDbref.child(key).valueEventListener {
             val value = it.value as Map<String, Any>
-//            groups.add(Grupos(key, value["name"] as String))
             userGroup.child(this.user!!.uid).child(key).setValue(
                 mapOf(
                    "name" to value["name"]
                 )
-            ) //= Grupos(key, value["name"] as String)
+            )
         }
-    }
-
-
-    fun getAllShops(
-        onUpdate: ((HashMap<String, HashMap<String, Any>>?) -> Unit)? = null,
-        onCanceled: ((DatabaseError) -> Unit)? = null
-    ) {
-
-//        FirebaseAuth.getInstance().addAuthStateListener {
-//            it.currentUser?.let { user ->
-//                this.user = user
-//                groupsDbref//.orderByChild("user").equalTo(it.uid)
-//                    .addValueEventListener(object : ValueEventListener {
-//                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                            // This method is called once with the initial value and again
-//                            // whenever data at this location is updated.
-//                            val value = dataSnapshot.value
-//                            onUpdate?.invoke(value as HashMap<String, HashMap<String, Any>>?)
-//                            Log.d("shopGroupFrag", "Value is: $value")
-//                        }
-//
-//                        override fun onCancelled(error: DatabaseError) {
-//                            // Failed to read value
-//                            onCanceled?.invoke(error)
-//                            Log.w("shopGroupFrag", "Failed to read value.", error.toException())
-//                        }
-//                    })
-//            }
-//        }
-
     }
 
     fun addGroupFB(group: ShopGroup) {
@@ -169,8 +98,10 @@ class ShopRepository @Inject constructor() {
     }
 
     fun addItem(item: ShopItem) {
-        val id = groupsDbref.push().key ?: "adadasfsdf"
-        itemsDbref.child(item.groupId).child(id).setValue(item)
+        val id = groupsDbref.push().key
+        id?.let {
+            itemsDbref.child(item.groupId).child(it).setValue(item)
+        }
     }
 
     fun removeItemFB(item: ShopItem) {
@@ -207,20 +138,33 @@ class ShopRepository @Inject constructor() {
 }
 
 
-private fun MutableLiveData<MutableList<Grupos>>.remove(key: String?) {
-        value?.removeAll { it.groupId == key }
+fun MutableStateFlow<MutableList<Grupos>>.remove(key: String?) {
+        value.removeAll { it.groupId == key }
         value = value
 }
 
-private fun <T> MutableLiveData<MutableList<T>>.add(grupos: T) {
+fun <T> MutableStateFlow<MutableList<T>>.add(grupos: T) {
     value?.add(grupos)
     value = value
 }
 
-private fun <T> MutableLiveData<MutableList<T>>.add(index: Int, grupos: T) {
+fun <T> MutableStateFlow<MutableList<T>>.add(index: Int, grupos: T) {
     value?.add(index, grupos)
     value = value
 }
+
+
+fun MutableStateFlow<MutableList<Grupos>>.addAfter(key: String?, group: Grupos) {
+    val id = value.indexOfFirst {
+        it.groupId == key
+    }
+        if (id >= 0)
+            add(id + 1, group)
+        else
+            add(group)
+
+}
+
 
 fun Query.valueEventListener(
     onUpdate: ((Map<String, Any>?) -> Unit)? = null,

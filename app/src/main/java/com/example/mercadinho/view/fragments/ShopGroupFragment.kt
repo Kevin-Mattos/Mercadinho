@@ -49,9 +49,6 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
         mViewModel.handle(ShopGroupListFragmentIntent.GetAllGroups)
         setupAdapter()
         setupSearch()
-        mViewModel.shopRepository.groups.observe(viewLifecycleOwner) {
-            mAdapter.update(it.map { grupos -> ShopGroup(grupos.groupName, "userrr").apply { id = grupos.groupId } })
-        }
         setListenters()
     }
 
@@ -124,9 +121,8 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
     private fun observeGroups() = lifecycleScope.launchWhenStarted {
         mViewModel.state.collect {
             when (it) {
-                is ShopGroupListFragmentState.GetAllGroups -> updateGroups(it.groupList)
+                is ShopGroupListFragmentState.GetAllGroups -> showGroups(it.groupList)
                 is ShopGroupListFragmentState.OnAddedError -> showError(it.message, it.code)
-                is ShopGroupListFragmentState.UpdateGroups -> mAdapter.update(it.groupList)
                 is ShopGroupListFragmentState.ShareGroup -> copyId(it.group)
             }
         }
@@ -145,7 +141,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             showToast(getString(R.string.error_group_invalid_name))
     }
 
-    private fun updateGroups(groupList: List<ShopGroup>) {
+    private fun showGroups(groupList: List<ShopGroup>) {
             mAdapter.update(groupList)
     }
 

@@ -42,14 +42,8 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
-        //mViewModel.deleteAllGroups()
         setupAdapter()
         mViewModel.handle(ShopItemListFragmentIntent.GetAllItensById)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mViewModel.handle(ShopItemListFragmentIntent.UpdateItens(mAdapter.items))
     }
 
     override fun onResume() {

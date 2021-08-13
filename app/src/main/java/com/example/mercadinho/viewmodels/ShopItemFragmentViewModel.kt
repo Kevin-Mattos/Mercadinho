@@ -15,7 +15,6 @@ sealed class ShopItemListFragmentState {
 sealed class ShopItemListFragmentIntent {
     object GetAllItensById : ShopItemListFragmentIntent()
     data class OnAdded(val shopItem: ShopItem) : ShopItemListFragmentIntent()
-    data class UpdateItens(val shopItems: List<ShopItem>) : ShopItemListFragmentIntent()
     data class RemoveItem(val shopItem: ShopItem) : ShopItemListFragmentIntent()
     data class UpdateItem(val item: ShopItem) : ShopItemListFragmentIntent()
 }
@@ -33,7 +32,6 @@ class ShopItemFragmentViewModel @Inject constructor(private val shopRepository: 
         when (intent) {
             is ShopItemListFragmentIntent.GetAllItensById -> getItemsById()
             is ShopItemListFragmentIntent.OnAdded -> insertShopItem(intent.shopItem)
-            is ShopItemListFragmentIntent.UpdateItens -> updateAll(intent.shopItems)
             is ShopItemListFragmentIntent.RemoveItem -> removeItem(intent.shopItem)
             is ShopItemListFragmentIntent.UpdateItem -> updateItem(intent.item)
         }
@@ -51,20 +49,7 @@ class ShopItemFragmentViewModel @Inject constructor(private val shopRepository: 
             _state.value = ShopItemListFragmentState.GetAllItensById(it.map { map -> ShopItem.fromMap(map.key, it[map.key] as HashMap<String, Any>) })
         }
     })
-//        disposable.add(shopRepository.getItemByGroupId(groupId).flowableSubscribe(
-//            onNext = { items ->
-//                state.value = ShopItemListFragmentState.GetAllItensById(items)
-//            }
-//        ))
 
     private fun insertShopItem(shopItem: ShopItem) = shopRepository.addItem(shopItem)
-//        disposable.add(shopRepository.insertShopItem(shopItem).completableSubscribe())
-
-//    private fun getItemById() = shopRepository.getItemByGroupId(groupId)
-
-    private fun updateAll(shopItems: List<ShopItem>) = 0f
-
-//        disposable.add(shopRepository.updateAllShopItens(shopItems).completableSubscribe())
-
 
 }
