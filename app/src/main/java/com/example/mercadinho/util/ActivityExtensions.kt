@@ -2,7 +2,10 @@ package com.example.mercadinho.util
 
 import android.app.Activity
 import android.content.Intent
+import android.widget.Toast
 import androidx.annotation.AnimRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
 import com.example.mercadinho.R
 
 fun Activity.startActivitySlide(intent: Intent, requestCode: Int? = null) {
@@ -16,4 +19,18 @@ fun Activity.startActivityTransition(intent: Intent, @AnimRes idAninIn :Int, @An
     else startActivityForResult(intent, requestCode)
     overridePendingTransition(idAninIn, idAninOut)
 
+}
+
+fun AppCompatActivity.makeTransaction(execute: FragmentTransaction.() -> Unit) {
+    val transaction = supportFragmentManager.beginTransaction()
+
+    execute(transaction)
+    transaction
+        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        .addToBackStack(null)
+        .commit()
+}
+
+fun AppCompatActivity.showToast(msg: String) {
+    Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
 }
