@@ -109,7 +109,7 @@ class ShopRepository @Inject constructor() {
     }
 
     fun updateItemFB(item: ShopItem) {
-        itemsDbref.child(item.id).child("bought").setValue(item.bought)
+        itemsDbref.child(item.groupId).child(item.id).child("bought").setValue(item.bought)
     }
 
     fun joinGroup(groupId: String, failedToJoin: (() -> Unit)? = null) {
@@ -178,7 +178,6 @@ fun Query.valueEventListener(
             val value = dataSnapshot.value
             onUpdate?.invoke(value as Map<String, Any>?)
             onSnapshot?.invoke(dataSnapshot)
-            Log.d("shopGroupFrag", "Value is: $value")
         }
 
         override fun onCancelled(error: DatabaseError) {

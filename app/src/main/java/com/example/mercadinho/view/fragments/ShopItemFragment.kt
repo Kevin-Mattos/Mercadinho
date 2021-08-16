@@ -2,6 +2,7 @@ package com.example.mercadinho.view.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.view.adapter.ShopItemAdapter
+import com.example.mercadinho.view.extensions.addTextListenter
+import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemListFragmentState
@@ -44,6 +47,25 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
         setupObserver()
         setupAdapter()
         mViewModel.handle(ShopItemListFragmentIntent.GetAllItensById)
+        setView()
+    }
+
+    private fun setView() {
+        mBinding.groupSearchView.addTextListenter(
+            onQuerySubmit = { query ->
+                Log.d("onQueryTextSubmit", "$query")
+                //query?.let {
+                mViewModel.handle(ShopItemListFragmentIntent.OnQuery(query ?: ""))
+                //  }
+
+            },
+            onTextChange = { text ->
+                Log.d("onTextChange", "$text")
+                text?.let {
+
+                }
+            }
+        )
     }
 
     override fun onResume() {

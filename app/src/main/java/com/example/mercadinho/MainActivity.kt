@@ -29,8 +29,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
-
-        Log.d(BuildConfig.FOO_STRING, ": ${BuildConfig.FOO}")
     }
 
     override fun onStart() {
