@@ -1,4 +1,4 @@
-package com.example.mercadinho.view.fragments
+package com.example.mercadinho.ui.groups
 
 import android.app.AlertDialog
 import android.content.ClipData
@@ -18,7 +18,6 @@ import com.example.mercadinho.R
 import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.FragmentShopGroupBinding
 import com.example.mercadinho.repository.entities.ShopGroup
-import com.example.mercadinho.view.adapter.ShopGroupAdapter
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.view.extensions.showToast
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel

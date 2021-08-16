@@ -1,4 +1,4 @@
-package com.example.mercadinho.view.adapter
+package com.example.mercadinho.ui.groups
 
 import android.content.Context
 import android.view.LayoutInflater

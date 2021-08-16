@@ -1,4 +1,4 @@
-package com.example.mercadinho.view.fragments
+package com.example.mercadinho.ui.item
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -14,9 +14,7 @@ import com.example.mercadinho.MainActivity
 import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
-import com.example.mercadinho.view.adapter.ShopItemAdapter
 import com.example.mercadinho.view.extensions.addTextListenter
-import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopItemListFragmentState
