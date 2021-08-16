@@ -1,13 +1,15 @@
 package com.example.mercadinho.viewmodels
 
-import android.util.Log
 import com.example.mercadinho.repository.ShopRepository
+import com.example.mercadinho.repository.add
 import com.example.mercadinho.repository.entities.ShopGroup
+import com.example.mercadinho.repository.entities.teste.Grupos
+import com.example.mercadinho.repository.remove
 import com.example.mercadinho.util.BaseViewModel
-import com.example.mercadinho.util.completableSubscribe
-import com.example.mercadinho.util.flowableSubscribe
 import com.example.mercadinho.util.singleSubscribe
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.core.Single
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 sealed class ShopGroupListFragmentState {
@@ -18,8 +20,7 @@ sealed class ShopGroupListFragmentState {
             INVALID_NAME(1)
         }
     }
-
-    data class UpdateGroups(val groupList: List<ShopGroup>) : ShopGroupListFragmentState()
+    data class ShareGroup(val group: ShopGroup) : ShopGroupListFragmentState()
 }
 
 sealed class ShopGroupListFragmentIntent {
@@ -27,56 +28,100 @@ sealed class ShopGroupListFragmentIntent {
     data class OnAdded(val shopGroup: ShopGroup) : ShopGroupListFragmentIntent()
     data class RemoveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
     data class SearchGroup(val query: String) : ShopGroupListFragmentIntent()
+    data class LeaveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
+    data class JoinGroup(val groupId: String) : ShopGroupListFragmentIntent()
+    data class OnClickShare(val group: ShopGroup) : ShopGroupListFragmentIntent()
 }
+
 @HiltViewModel
-class ShopGroupFragmentViewModel @Inject constructor(private val shopRepository: ShopRepository) :
+class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopRepository) :
     BaseViewModel<ShopGroupListFragmentIntent, ShopGroupListFragmentState>() {
+
+    private val TAG: String = "ShopGroupFragmentViewModel"
+    override val initialState: ShopGroupListFragmentState =
+        ShopGroupListFragmentState.GetAllGroups(emptyList())
+    val groups: MutableStateFlow<MutableList<Grupos>> =
+        MutableStateFlow(mutableListOf())
+
+    init {
+        shopRepository.initStuff(
+            onGroupAdded = ::onGroupAdded,
+            onGroupChanged = ::onGroupChanged,
+            onGroupRemoved = ::onGroupRemoved
+        )
+    }
 
     override fun handle(intent: ShopGroupListFragmentIntent) {
         when (intent) {
-            is ShopGroupListFragmentIntent.GetAllGroups -> getAllShopGroups()
             is ShopGroupListFragmentIntent.OnAdded -> insertShopGroup(intent.shopGroup)
             is ShopGroupListFragmentIntent.RemoveGroup -> removeGroup(intent.group)
             is ShopGroupListFragmentIntent.SearchGroup -> queryGroups(intent.query)
+            is ShopGroupListFragmentIntent.JoinGroup -> joinGroup(intent.groupId)
+            is ShopGroupListFragmentIntent.LeaveGroup -> leaveGroup(intent.group)
+            is ShopGroupListFragmentIntent.OnClickShare -> shareGroup(intent.group)
         }
     }
 
     private fun queryGroups(query: String) {
         disposable.add(
-            shopRepository.getAllShopsRxJava(query).singleSubscribe(onSuccess = { list ->
-                state.value = ShopGroupListFragmentState.UpdateGroups(list)
-            })
+            Single.create<List<Grupos>> {
+                val filteredGroups = groups.value.filter { it.groupName.contains(query) }
+                it.onSuccess(filteredGroups)
+            }.singleSubscribe(
+                onSuccess = {
+                    _state.value = ShopGroupListFragmentState.GetAllGroups(it.toShopGroup())
+                }
+            )
         )
     }
 
     private fun removeGroup(group: ShopGroup) {
-        disposable.add(shopRepository.removeGroup(group).completableSubscribe())
-    }
-
-    private fun getAllShopGroups() {
-        disposable.add(
-            shopRepository.getAllShops().flowableSubscribe(
-                onNext = { groups ->
-                    state.value = ShopGroupListFragmentState.GetAllGroups(groups)
-                })
-        )
+        shopRepository.removeGroupFB(group)
     }
 
     private fun insertShopGroup(shopGroup: ShopGroup) {
         try {
             shopGroup.validate()
-            disposable.add(shopRepository.insertShopGroup(shopGroup).completableSubscribe())
+            shopRepository.addGroupFB(shopGroup)
         } catch (e: RuntimeException) {
-            state.value = ShopGroupListFragmentState.OnAddedError(
+            _state.value = ShopGroupListFragmentState.OnAddedError(
                 e.message ?: "Unexpected failure",
                 ShopGroupListFragmentState.OnAddedError.AddErrorCodes.INVALID_NAME
             )
         }
     }
 
-//    fun getAllGroups() = shopRepository.getAllShops()
+    private fun joinGroup(groupId: String) {
+        shopRepository.joinGroup(groupId)
+    }
 
-    fun deleteAllGroups() = disposable.add(shopRepository.deleteAllGroups().completableSubscribe())
+    private fun leaveGroup(group: ShopGroup) = shopRepository.leaveGroup(group)
 
-//    fun insertShopItem(shopItem: ShopItem) = shopRepository.insertShopItem(shopItem)
+    private fun shareGroup(group: ShopGroup) {
+        _state.value = ShopGroupListFragmentState.ShareGroup(group)
+    }
+
+    private fun onGroupAdded(group: Grupos) {
+        groups.add(group)
+        showGroups()
+    }
+
+    private fun onGroupChanged(group: Grupos) {
+        val group2 = groups.value.first { group.groupId == it.groupId }
+        group2.groupName = group.groupName
+        showGroups()
+    }
+
+    private fun onGroupRemoved(group: String?) {
+        groups.remove(group)
+        showGroups()
+    }
+
+    private fun showGroups() {
+        _state.value = ShopGroupListFragmentState.GetAllGroups(groups.value.toShopGroup())
+    }
+}
+
+fun List<Grupos>.toShopGroup(): List<ShopGroup> {
+    return this.map { map -> ShopGroup(map.groupName).apply { id = map.groupId } }
 }

@@ -1,12 +1,11 @@
 package com.example.mercadinho.viewmodels
 
-import android.util.Log
 import com.example.mercadinho.repository.ShopRepository
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.util.BaseViewModel
-import com.example.mercadinho.util.completableSubscribe
-import com.example.mercadinho.util.flowableSubscribe
+import com.example.mercadinho.util.singleSubscribe
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 sealed class ShopItemListFragmentState {
@@ -15,42 +14,60 @@ sealed class ShopItemListFragmentState {
 
 sealed class ShopItemListFragmentIntent {
     object GetAllItensById : ShopItemListFragmentIntent()
+    data class OnQuery(val query: String) : ShopItemListFragmentIntent()
     data class OnAdded(val shopItem: ShopItem) : ShopItemListFragmentIntent()
-    data class UpdateItens(val shopItems: List<ShopItem>) : ShopItemListFragmentIntent()
     data class RemoveItem(val shopItem: ShopItem) : ShopItemListFragmentIntent()
+    data class UpdateItem(val item: ShopItem) : ShopItemListFragmentIntent()
 }
 
 @HiltViewModel
 class ShopItemFragmentViewModel @Inject constructor(private val shopRepository: ShopRepository) :
     BaseViewModel<ShopItemListFragmentIntent, ShopItemListFragmentState>() {
 
-    var groupId = 0L
+    private val TAG: String = "ShopItemFragmentViewModel"
+    var groupId = ""
+    var items : MutableList<ShopItem> =
+        mutableListOf()
+
+    override val initialState: ShopItemListFragmentState
+        get() = ShopItemListFragmentState.GetAllItensById(emptyList())
 
     override fun handle(intent: ShopItemListFragmentIntent) {
         when (intent) {
             is ShopItemListFragmentIntent.GetAllItensById -> getItemsById()
             is ShopItemListFragmentIntent.OnAdded -> insertShopItem(intent.shopItem)
-            is ShopItemListFragmentIntent.UpdateItens -> updateAll(intent.shopItems)
             is ShopItemListFragmentIntent.RemoveItem -> removeItem(intent.shopItem)
+            is ShopItemListFragmentIntent.UpdateItem -> updateItem(intent.item)
+            is ShopItemListFragmentIntent.OnQuery -> queryGroups(intent.query)
         }
     }
 
-    private fun removeItem(shopItem: ShopItem) = disposable.add(shopRepository.removeItem(shopItem).completableSubscribe())
+    private fun updateItem(item: ShopItem) {
+        shopRepository.updateItemFB(item)
+    }
 
-    private fun getItemsById() =
-        disposable.add(shopRepository.getItemByGroupId(groupId).flowableSubscribe(
-            onNext = { items ->
-                state.value = ShopItemListFragmentState.GetAllItensById(items)
-            }
-        ))
+    private fun removeItem(shopItem: ShopItem) = shopRepository.removeItemFB(shopItem)//disposable.add(shopRepository.removeItem(shopItem).completableSubscribe())
 
-    private fun insertShopItem(shopItem: ShopItem) =
-        disposable.add(shopRepository.insertShopItem(shopItem).completableSubscribe())
+    private fun getItemsById() = shopRepository.getItemByShopId(groupId, onUpdate = { result ->
+        result?.let {
+            items = it.map { map -> ShopItem.fromMap(map.key, it[map.key] as HashMap<String, Any>) }.toMutableList()
+            _state.value = ShopItemListFragmentState.GetAllItensById(items)
+        }
+    })
 
-//    private fun getItemById() = shopRepository.getItemByGroupId(groupId)
-
-    private fun updateAll(shopItems: List<ShopItem>) =
-        disposable.add(shopRepository.updateAllShopItens(shopItems).completableSubscribe())
+    private fun insertShopItem(shopItem: ShopItem) = shopRepository.addItem(shopItem)
 
 
+    private fun queryGroups(query: String) {
+        disposable.add(
+            Single.create<List<ShopItem>> {
+                val filteredGroups = items.filter { it.name.contains(query) }
+                it.onSuccess(filteredGroups)
+            }.singleSubscribe(
+                onSuccess = {
+                    _state.value = ShopItemListFragmentState.GetAllItensById(it)
+                }
+            )
+        )
+    }
 }

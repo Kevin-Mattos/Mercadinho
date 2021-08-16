@@ -3,7 +3,6 @@ package com.example.mercadinho.view.extensions
 import androidx.appcompat.widget.SearchView
 
 fun SearchView.addTextListenter(onTextChange: ((String?) -> Unit)? = null, onQuerySubmit: ((String?) -> Unit)? = null) {
-
     this.setOnQueryTextListener(object :SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
             onQuerySubmit?.invoke(query)
@@ -15,6 +14,5 @@ fun SearchView.addTextListenter(onTextChange: ((String?) -> Unit)? = null, onQue
             onQuerySubmit?.invoke(newText)
             return true
         }
-
     })
 }
