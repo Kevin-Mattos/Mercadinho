@@ -20,7 +20,7 @@ val USER_GROUP_KEY = "User-Group"
 val GROUP_USER_KEY = "Group-User"
 
 @Singleton
-class ShopRepository @Inject constructor() {
+class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRepository {
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_URL)
     private val groupsDbref: DatabaseReference = database.getReference(GROUPS_KEY)
     private val itemsDbref: DatabaseReference = database.getReference(ITEMS_KEY)
@@ -29,7 +29,7 @@ class ShopRepository @Inject constructor() {
     val groupUser: DatabaseReference = database.getReference(GROUP_USER_KEY)
     var user: FirebaseUser? = null
 
-    fun initStuff(
+    override fun initStuff(
         onGroupAdded: ((Grupos) -> Unit),
         onGroupChanged: ((Grupos) -> Unit),
         onGroupRemoved: ((String?) -> Unit)
@@ -67,7 +67,7 @@ class ShopRepository @Inject constructor() {
         }
     }
 
-    fun addGroupFB(group: ShopGroup) {
+    override fun addGroupFB(group: ShopGroup) {
         user?.let { user ->
             val newGroupId = groupsDbref.push().key ?: ""
             group.user = user.uid
@@ -79,7 +79,7 @@ class ShopRepository @Inject constructor() {
         }
     }
 
-    fun removeGroupFB(group: ShopGroup) {
+    override fun removeGroupFB(group: ShopGroup) {
         user?.let { user ->
             val removeGroupId = group.id
             val map: HashMap<String, Any?> = hashMapOf()
@@ -90,29 +90,29 @@ class ShopRepository @Inject constructor() {
         }
     }
 
-    fun getItemByShopId(
-        groupId: String, onUpdate: ((Map<String, Any>?) -> Unit)? = null,
-        onCanceled: ((DatabaseError) -> Unit)? = null
+    override fun getItemByShopId(
+        itemId: String, onUpdate: ((Map<String, Any>?) -> Unit)?,
+        onCanceled: ((DatabaseError) -> Unit)?
     ) {
-        itemsDbref.child(groupId).valueEventListener(onUpdate = onUpdate, onCanceled = onCanceled)
+        itemsDbref.child(itemId).valueEventListener(onUpdate = onUpdate, onCanceled = onCanceled)
     }
 
-    fun addItem(item: ShopItem) {
+    override fun addItem(item: ShopItem) {
         val id = groupsDbref.push().key
         id?.let {
             itemsDbref.child(item.groupId).child(it).setValue(item)
         }
     }
 
-    fun removeItemFB(item: ShopItem) {
+    override fun removeItemFB(item: ShopItem) {
         itemsDbref.child(item.id).removeValue()
     }
 
-    fun updateItemFB(item: ShopItem) {
+    override fun updateItemFB(item: ShopItem) {
         itemsDbref.child(item.groupId).child(item.id).child("bought").setValue(item.bought)
     }
 
-    fun joinGroup(groupId: String, failedToJoin: (() -> Unit)? = null) {
+    override fun joinGroup(groupId: String, failedToJoin: (() -> Unit)?) {
         user?.let { user ->
             database.reference.child(GROUPS_KEY).child(groupId).singleValueEvent(onSnapshot = {
                 if(it.exists()) {
@@ -126,7 +126,7 @@ class ShopRepository @Inject constructor() {
         }
     }
 
-    fun leaveGroup(group: ShopGroup) {
+    override fun leaveGroup(group: ShopGroup) {
         user?.let { user ->
             val joinGroupId = group.id
             val map: HashMap<String, Any?> = hashMapOf()

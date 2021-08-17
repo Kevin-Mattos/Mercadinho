@@ -1,6 +1,6 @@
 package com.example.mercadinho.viewmodels
 
-import com.example.mercadinho.repository.ShopRepository
+import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.add
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.teste.Grupos
@@ -34,7 +34,7 @@ sealed class ShopGroupListFragmentIntent {
 }
 
 @HiltViewModel
-class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopRepository) :
+class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGroupRepository) :
     BaseViewModel<ShopGroupListFragmentIntent, ShopGroupListFragmentState>() {
 
     private val TAG: String = "ShopGroupFragmentViewModel"
