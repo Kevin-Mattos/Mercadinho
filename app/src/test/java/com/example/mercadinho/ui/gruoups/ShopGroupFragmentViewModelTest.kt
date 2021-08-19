@@ -3,7 +3,6 @@ package com.example.mercadinho.ui.gruoups
 import com.example.mercadinho.RxImmediateSchedulerRule
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.entities.ShopGroup
-import com.example.mercadinho.repository.entities.teste.Grupos
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
 import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
 import com.example.mercadinho.viewmodels.ShopGroupListFragmentState
@@ -23,7 +22,7 @@ class ShopGroupFragmentViewModelTest {
     fun SearchGroup_should_filter_groups_by_name() {
         //prepare
         val names = listOf("nome", "teste", "teste com nome", "sem Nome")
-        viewModel.groups.value.addAll(Array(names.size) { Grupos("", names[it]) })
+        viewModel.groups.value.addAll(Array(names.size) { ShopGroup(name = names[it]) })
 
         //action
         viewModel.handle(ShopGroupListFragmentIntent.SearchGroup("nome"))
@@ -50,7 +49,7 @@ class ShopGroupFragmentViewModelTest {
         val newGroupName = "nome do grupo"
 
         //action
-        viewModel.handle(ShopGroupListFragmentIntent.OnAdded(ShopGroup(newGroupName)))
+        viewModel.handle(ShopGroupListFragmentIntent.OnAdded(ShopGroup(name = newGroupName)))
 
         //Assert
         Assert.assertEquals(
@@ -63,11 +62,11 @@ class ShopGroupFragmentViewModelTest {
     fun WHEN_group_list_is_not_empty_add_group_group_list_should_contain_item_at_the_end() {
         //prepare
         val names = listOf("nome", "teste", "teste com nome", "sem Nome")
-        viewModel.groups.value.addAll(Array(names.size) { Grupos("", names[it]) })
+        viewModel.groups.value.addAll(Array(names.size) { ShopGroup(name = names[it]) })
         val newGroupName = "nome do grupo"
 
         //action
-        viewModel.handle(ShopGroupListFragmentIntent.OnAdded(ShopGroup(newGroupName)))
+        viewModel.handle(ShopGroupListFragmentIntent.OnAdded(ShopGroup(name = newGroupName)))
 
         //Assert
         Assert.assertEquals(
@@ -80,11 +79,11 @@ class ShopGroupFragmentViewModelTest {
     fun WHEN_RemoveGroup_list_size_should_decrease() {
         //prepare
         val names = listOf("nome", "teste", "teste com nome", "sem Nome")
-        viewModel.groups.value.addAll(Array(names.size) { Grupos("${it}12123", names[it]) })
+        viewModel.groups.value.addAll(Array(names.size) { ShopGroup("${it}12123", names[it]) })
         val newGroupName = "nome do grupo"
 
         //action
-        viewModel.handle(ShopGroupListFragmentIntent.RemoveGroup(ShopGroup(newGroupName).apply {
+        viewModel.handle(ShopGroupListFragmentIntent.RemoveGroup(ShopGroup(name = newGroupName).apply {
             id = "012123"
         }))
 
@@ -108,11 +107,11 @@ class ShopGroupFragmentViewModelTest {
     fun WHEN_leave_group_list_size_should_decrease() {
         //prepare
         val names = listOf("nome", "teste", "teste com nome", "sem Nome")
-        viewModel.groups.value.addAll(Array(names.size) { Grupos("${it}12123", names[it]) })
+        viewModel.groups.value.addAll(Array(names.size) { ShopGroup("${it}12123", names[it]) })
         val newGroupName = "nome do grupo"
 
         //action
-        viewModel.handle(ShopGroupListFragmentIntent.LeaveGroup(ShopGroup(newGroupName).apply {
+        viewModel.handle(ShopGroupListFragmentIntent.LeaveGroup(ShopGroup(name = newGroupName).apply {
             id = "012123"
         }))
 
@@ -136,7 +135,7 @@ class ShopGroupFragmentViewModelTest {
     fun WHEN_join_group_list_size_should_increase() {
         //prepare
         val names = listOf("nome", "teste", "teste com nome", "sem Nome")
-        viewModel.groups.value.addAll(Array(names.size) { Grupos("${it}12123", names[it]) })
+        viewModel.groups.value.addAll(Array(names.size) { ShopGroup("${it}12123", names[it]) })
         val newGroupName = "nome do grupo"
 
         //action
@@ -161,18 +160,17 @@ class ShopGroupFragmentViewModelTest {
             (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList.size
         )
     }
-
 }
 
 class ShopRepositoryMock : ShopGroupRepository {
 
-    lateinit var onGroupAdded: (Grupos) -> Unit
-    lateinit var onGroupChanged: (Grupos) -> Unit
+    lateinit var onGroupAdded: (ShopGroup) -> Unit
+    lateinit var onGroupChanged: (ShopGroup) -> Unit
     lateinit var onGroupRemoved: (String?) -> Unit
 
     override fun initStuff(
-        onGroupAdded: (Grupos) -> Unit,
-        onGroupChanged: (Grupos) -> Unit,
+        onGroupAdded: (ShopGroup) -> Unit,
+        onGroupChanged: (ShopGroup) -> Unit,
         onGroupRemoved: (String?) -> Unit
     ) {
         this.onGroupAdded = onGroupAdded
@@ -181,7 +179,7 @@ class ShopRepositoryMock : ShopGroupRepository {
     }
 
     override fun addGroupFB(group: ShopGroup) {
-        onGroupAdded(Grupos(group.id, group.name))
+        onGroupAdded(ShopGroup(group.id, group.name))
     }
 
     override fun removeGroupFB(group: ShopGroup) {
@@ -189,7 +187,7 @@ class ShopRepositoryMock : ShopGroupRepository {
     }
 
     override fun joinGroup(groupId: String, failedToJoin: (() -> Unit)?) {
-        onGroupAdded(Grupos(groupId, groupId))
+        onGroupAdded(ShopGroup(groupId, groupId))
     }
 
     override fun leaveGroup(group: ShopGroup) {

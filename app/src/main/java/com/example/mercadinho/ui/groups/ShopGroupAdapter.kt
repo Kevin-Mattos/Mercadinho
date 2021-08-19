@@ -40,7 +40,7 @@ class ShopGroupAdapter (private val context: Context, private val groups: Mutabl
                 with(mBinding) {
                     groupName.text = shopGroup.name
                     root.setOnClickListener {
-                        actions.onClick(shopGroup.id)
+                        shopGroup.id?.let { id -> actions.onClick(id) }
                     }
                     root.setOnLongClickListener {
                         actions.onLongClick(shopGroup)
