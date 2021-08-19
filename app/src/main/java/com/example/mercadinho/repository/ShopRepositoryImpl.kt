@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.mercadinho.BuildConfig.FIREBASE_REALTIME_URL
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
-import com.example.mercadinho.repository.entities.teste.Grupos
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -30,8 +29,8 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
     var user: FirebaseUser? = null
 
     override fun initStuff(
-        onGroupAdded: ((Grupos) -> Unit),
-        onGroupChanged: ((Grupos) -> Unit),
+        onGroupAdded: ((ShopGroup) -> Unit),
+        onGroupChanged: ((ShopGroup) -> Unit),
         onGroupRemoved: ((String?) -> Unit)
     ) {
         //watch on user -> groups
@@ -40,18 +39,23 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
                 this.user = user
                 database.reference.child("$USER_GROUP_KEY/${user.uid}")
                     .childListener(onChildAdded = { snapShot, prv ->
-                        watchGroup(snapShot.key!!)
-                        val group = snapShot.value as HashMap<String, Any>
-                        onGroupAdded(Grupos(snapShot.key!!, group["name"] as String))
+                        snapShot.key?.let {
+                            watchGroup(it)
+                            val group = snapShot.value as HashMap<String, Any>
+                            onGroupAdded(ShopGroup(it, group["name"] as String))
+                        }
+
                     },
-                    onChildChanged = { dataSnapshot, s ->
-                        val groupMap = dataSnapshot.value as HashMap<String, Any>
-                        onGroupChanged(Grupos(dataSnapshot.key!!, groupMap["name"] as String))
-                    },
-                    onChildRemoved = { dataSnapshot, event ->
-                        onGroupRemoved(dataSnapshot.key)
-                        groupsDbref.child(dataSnapshot.key!!).removeEventListener(event)
-                    })
+                        onChildChanged = { dataSnapshot, s ->
+                            dataSnapshot.key?.let {
+                                val groupMap = dataSnapshot.value as HashMap<String, Any>
+                                onGroupChanged(ShopGroup(it, groupMap["name"] as String))
+                            }
+                        },
+                        onChildRemoved = { dataSnapshot, event ->
+                            onGroupRemoved(dataSnapshot.key)
+                            groupsDbref.child(dataSnapshot.key!!).removeEventListener(event)
+                        })
             }
         }
     }
@@ -61,7 +65,7 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
             val value = it.value as Map<String, Any>
             userGroup.child(this.user!!.uid).child(key).setValue(
                 mapOf(
-                   "name" to value["name"]
+                    "name" to value["name"]
                 )
             )
         }
@@ -74,7 +78,7 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
             val map: HashMap<String, Any> = hashMapOf()
             map["$GROUPS_KEY/$newGroupId"] = group
             map["$GROUP_USER_KEY/$newGroupId/${user.uid}"] = user.displayName as Any //todo true
-            map["$USER_GROUP_KEY/${user.uid}/$newGroupId"] = true
+            map["$USER_GROUP_KEY/${user.uid}/$newGroupId"] = group
             database.reference.updateChildren(map)
         }
     }
@@ -91,10 +95,20 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
     }
 
     override fun getItemByShopId(
-        itemId: String, onUpdate: ((Map<String, Any>?) -> Unit)?,
+        itemId: String,
+        onUpdate: ((List<ShopItem>) -> Unit)?,
         onCanceled: ((DatabaseError) -> Unit)?
     ) {
-        itemsDbref.child(itemId).valueEventListener(onUpdate = onUpdate, onCanceled = onCanceled)
+        itemsDbref.child(itemId).valueEventListener(onUpdate = {
+            it?.let {
+                onUpdate?.invoke(it.map { map ->
+                    ShopItem.fromMap(
+                        map.key,
+                        it[map.key] as HashMap<String, Any>
+                    )
+                })
+            }
+        }, onCanceled = onCanceled)
     }
 
     override fun addItem(item: ShopItem) {
@@ -108,17 +122,17 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
         itemsDbref.child(item.id).removeValue()
     }
 
-    override fun updateItemFB(item: ShopItem) {
+    override fun updateItem(item: ShopItem) {
         itemsDbref.child(item.groupId).child(item.id).child("bought").setValue(item.bought)
     }
 
     override fun joinGroup(groupId: String, failedToJoin: (() -> Unit)?) {
         user?.let { user ->
             database.reference.child(GROUPS_KEY).child(groupId).singleValueEvent(onSnapshot = {
-                if(it.exists()) {
+                if (it.exists()) {
                     val map: HashMap<String, Any?> = hashMapOf()
                     map["$GROUP_USER_KEY/$groupId/${user.uid}"] = user.displayName
-                    map["$USER_GROUP_KEY/${user.uid}/$groupId"] = true
+                    map["$USER_GROUP_KEY/${user.uid}/$groupId"] = ShopGroup(it.key!!, "nome")
                     database.reference.updateChildren(map)
                 } else
                     failedToJoin?.invoke()
@@ -138,9 +152,9 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
 }
 
 
-fun MutableStateFlow<MutableList<Grupos>>.remove(key: String?) {
-        value.removeAll { it.groupId == key }
-        value = value
+fun MutableStateFlow<MutableList<ShopGroup>>.remove(key: String?) {
+    value.removeAll { it.id == key }
+    value = value
 }
 
 fun <T> MutableStateFlow<MutableList<T>>.add(grupos: T) {
@@ -154,14 +168,14 @@ fun <T> MutableStateFlow<MutableList<T>>.add(index: Int, grupos: T) {
 }
 
 
-fun MutableStateFlow<MutableList<Grupos>>.addAfter(key: String?, group: Grupos) {
+fun MutableStateFlow<MutableList<ShopGroup>>.addAfter(key: String?, group: ShopGroup) {
     val id = value.indexOfFirst {
-        it.groupId == key
+        it.id == key
     }
-        if (id >= 0)
-            add(id + 1, group)
-        else
-            add(group)
+    if (id >= 0)
+        add(id + 1, group)
+    else
+        add(group)
 
 }
 

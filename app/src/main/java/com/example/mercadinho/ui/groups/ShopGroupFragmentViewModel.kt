@@ -3,8 +3,9 @@ package com.example.mercadinho.viewmodels
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.add
 import com.example.mercadinho.repository.entities.ShopGroup
-import com.example.mercadinho.repository.entities.teste.Grupos
 import com.example.mercadinho.repository.remove
+import com.example.mercadinho.ui.groups.ShopGroupListFragmentIntent
+import com.example.mercadinho.ui.groups.ShopGroupListFragmentState
 import com.example.mercadinho.util.BaseViewModel
 import com.example.mercadinho.util.singleSubscribe
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,26 +13,6 @@ import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
-sealed class ShopGroupListFragmentState {
-    data class GetAllGroups(val groupList: List<ShopGroup>) : ShopGroupListFragmentState()
-    data class OnAddedError(val message: String, val code: AddErrorCodes) :
-        ShopGroupListFragmentState() {
-        enum class AddErrorCodes(val code: Int) {
-            INVALID_NAME(1)
-        }
-    }
-    data class ShareGroup(val group: ShopGroup) : ShopGroupListFragmentState()
-}
-
-sealed class ShopGroupListFragmentIntent {
-    object GetAllGroups : ShopGroupListFragmentIntent()
-    data class OnAdded(val shopGroup: ShopGroup) : ShopGroupListFragmentIntent()
-    data class RemoveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
-    data class SearchGroup(val query: String) : ShopGroupListFragmentIntent()
-    data class LeaveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
-    data class JoinGroup(val groupId: String) : ShopGroupListFragmentIntent()
-    data class OnClickShare(val group: ShopGroup) : ShopGroupListFragmentIntent()
-}
 
 @HiltViewModel
 class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGroupRepository) :
@@ -40,7 +21,7 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
     private val TAG: String = "ShopGroupFragmentViewModel"
     override val initialState: ShopGroupListFragmentState =
         ShopGroupListFragmentState.GetAllGroups(emptyList())
-    val groups: MutableStateFlow<MutableList<Grupos>> =
+    val groups: MutableStateFlow<MutableList<ShopGroup>> =
         MutableStateFlow(mutableListOf())
 
     init {
@@ -64,8 +45,8 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
 
     private fun queryGroups(query: String) {
         disposable.add(
-            Single.create<List<Grupos>> {
-                val filteredGroups = groups.value.filter { it.groupName.contains(query) }
+            Single.create<List<ShopGroup>> {
+                val filteredGroups = groups.value.filter { it.name.contains(query) }
                 it.onSuccess(filteredGroups)
             }.singleSubscribe(
                 onSuccess = {
@@ -101,14 +82,14 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
         _state.value = ShopGroupListFragmentState.ShareGroup(group)
     }
 
-    private fun onGroupAdded(group: Grupos) {
+    private fun onGroupAdded(group: ShopGroup) {
         groups.add(group)
         showGroups()
     }
 
-    private fun onGroupChanged(group: Grupos) {
-        val group2 = groups.value.first { group.groupId == it.groupId }
-        group2.groupName = group.groupName
+    private fun onGroupChanged(group: ShopGroup) {
+        val group2 = groups.value.first { group.id == it.id }
+        group2.name = group.name
         showGroups()
     }
 
@@ -122,6 +103,6 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
     }
 }
 
-fun List<Grupos>.toShopGroup(): List<ShopGroup> {
-    return this.map { map -> ShopGroup(map.groupName).apply { id = map.groupId } }
+fun List<ShopGroup>.toShopGroup(): List<ShopGroup> {
+    return this.map { map -> ShopGroup(map.id, name = map.name) }
 }

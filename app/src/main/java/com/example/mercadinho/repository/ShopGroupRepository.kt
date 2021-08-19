@@ -2,13 +2,12 @@ package com.example.mercadinho.repository
 
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
-import com.example.mercadinho.repository.entities.teste.Grupos
 import com.google.firebase.database.DatabaseError
 
 interface ShopGroupRepository {
     fun initStuff(
-        onGroupAdded: ((Grupos) -> Unit),
-        onGroupChanged: ((Grupos) -> Unit),
+        onGroupAdded: ((ShopGroup) -> Unit),
+        onGroupChanged: ((ShopGroup) -> Unit),
         onGroupRemoved: ((String?) -> Unit)
     )
     fun addGroupFB(group: ShopGroup)
@@ -19,10 +18,10 @@ interface ShopGroupRepository {
 
 interface ShopItemRepository {
     fun getItemByShopId(
-        itemId: String, onUpdate: ((Map<String, Any>?) -> Unit)? = null,
+        itemId: String, onUpdate: ((List<ShopItem>) -> Unit)? = null,
         onCanceled: ((DatabaseError) -> Unit)? = null
     )
     fun addItem(item: ShopItem)
     fun removeItemFB(item: ShopItem)
-    fun updateItemFB(item: ShopItem)
+    fun updateItem(item: ShopItem)
 }

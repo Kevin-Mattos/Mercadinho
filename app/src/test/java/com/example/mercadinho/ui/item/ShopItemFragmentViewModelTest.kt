@@ -71,7 +71,7 @@ class ShopItemFragmentViewModelTest {
 
 class ShopRepositoryMock: ShopItemRepository {
 
-    lateinit var onUpdate: ((Map<String, Any>?) -> Unit)
+    lateinit var onUpdate: ((List<ShopItem>) -> Unit)
     val items = mutableListOf<ShopItem>()
 
     init {
@@ -81,7 +81,7 @@ class ShopRepositoryMock: ShopItemRepository {
 
     override fun getItemByShopId(
         itemId: String,
-        onUpdate: ((Map<String, Any>?) -> Unit)?,
+        onUpdate: ((List<ShopItem>) -> Unit)?,
         onCanceled: ((DatabaseError) -> Unit)?
     ) {
         if (onUpdate != null) {
@@ -100,21 +100,21 @@ class ShopRepositoryMock: ShopItemRepository {
         onUpdate(getStuff())
     }
 
-    override fun updateItemFB(item: ShopItem) {
+    override fun updateItem(item: ShopItem) {
         val item2 = items.firstOrNull { it.id == item.id }
         item2?.bought = item.bought
         onUpdate(getStuff())
     }
 
-    fun getStuff(): Map<String, Any> {
-        val a = linkedMapOf<String, Any>()
-
-        items.forEach {
-            a[it.id] = mapOf(
-        "groupId" to it.id,
-        "name" to it.name,
-        "bought" to false)
-        }
-        return a
+    fun getStuff(): MutableList<ShopItem> {
+//        val a = linkedMapOf<String, Any>()
+//
+//        items.forEach {
+//            a[it.id] = mapOf(
+//        "groupId" to it.id,
+//        "name" to it.name,
+//        "bought" to false)
+//        }
+        return items
     }
 }

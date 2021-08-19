@@ -104,7 +104,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             confirmButton.setOnClickListener {
                 mViewModel.handle(ShopGroupListFragmentIntent
 //                    .JoinGroup(binding.inputName.text.toString()))
-                    .OnAdded(ShopGroup(binding.inputName.text.toString())))
+                    .OnAdded(ShopGroup(name = binding.inputName.text.toString())))
                 dialog.cancel()
             }
         }
