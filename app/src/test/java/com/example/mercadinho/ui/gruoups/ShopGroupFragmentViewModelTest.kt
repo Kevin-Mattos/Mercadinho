@@ -3,9 +3,9 @@ package com.example.mercadinho.ui.gruoups
 import com.example.mercadinho.RxImmediateSchedulerRule
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.entities.ShopGroup
+import com.example.mercadinho.ui.groups.ShopGroupListFragmentIntent
+import com.example.mercadinho.ui.groups.ShopGroupListFragmentState
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
-import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
-import com.example.mercadinho.viewmodels.ShopGroupListFragmentState
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test

@@ -4,8 +4,6 @@ import com.example.mercadinho.RxImmediateSchedulerRule
 import com.example.mercadinho.repository.ShopItemRepository
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
-import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
-import com.example.mercadinho.viewmodels.ShopItemListFragmentState
 import com.google.firebase.database.DatabaseError
 import org.junit.Assert
 import org.junit.Before

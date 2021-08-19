@@ -21,8 +21,6 @@ import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.view.extensions.showToast
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
-import com.example.mercadinho.viewmodels.ShopGroupListFragmentIntent
-import com.example.mercadinho.viewmodels.ShopGroupListFragmentState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 

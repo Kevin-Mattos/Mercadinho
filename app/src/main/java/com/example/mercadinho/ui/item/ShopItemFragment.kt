@@ -16,8 +16,6 @@ import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
-import com.example.mercadinho.viewmodels.ShopItemListFragmentIntent
-import com.example.mercadinho.viewmodels.ShopItemListFragmentState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
