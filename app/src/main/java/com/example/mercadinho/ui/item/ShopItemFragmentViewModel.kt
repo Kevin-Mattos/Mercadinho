@@ -1,6 +1,7 @@
 package com.example.mercadinho.viewmodels
 
 import com.example.mercadinho.repository.ShopItemRepository
+import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.ui.item.ShopItemListFragmentIntent
 import com.example.mercadinho.ui.item.ShopItemListFragmentState
@@ -16,7 +17,7 @@ class ShopItemFragmentViewModel @Inject constructor(private val shopRepository: 
     BaseViewModel<ShopItemListFragmentIntent, ShopItemListFragmentState>() {
 
     private val TAG: String = "ShopItemFragmentViewModel"
-    var groupId = ""
+    lateinit var group: ShopGroup
     var items: MutableList<ShopItem> =
         mutableListOf()
 
@@ -39,7 +40,7 @@ class ShopItemFragmentViewModel @Inject constructor(private val shopRepository: 
 
     private fun removeItem(shopItem: ShopItem) = shopRepository.removeItemFB(shopItem)
 
-    private fun getItemsById() = shopRepository.getItemByShopId(groupId, onUpdate = { result ->
+    private fun getItemsById() = shopRepository.getItemByShopId(group.id, onUpdate = { result ->
 
         items = result.toMutableList()
         _state.value = ShopItemListFragmentState.GetAllItensById(items)

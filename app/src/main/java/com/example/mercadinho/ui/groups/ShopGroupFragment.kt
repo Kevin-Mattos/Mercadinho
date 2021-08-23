@@ -28,32 +28,32 @@ import kotlinx.coroutines.flow.collect
 @AndroidEntryPoint
 class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity.FabAction {
 
-    private val mBinding by lazy { FragmentShopGroupBinding.inflate(layoutInflater) }
-    private val mAdapter by lazy { ShopGroupAdapter(mMainActivity.applicationContext, actions = this) }
-    private val mMainActivity: MainActivity by lazy { activity as MainActivity }
-    private val mViewModel: ShopGroupFragmentViewModel by viewModels()
+    private val binding by lazy { FragmentShopGroupBinding.inflate(layoutInflater) }
+    private val adapter by lazy { ShopGroupAdapter(mainActivity.applicationContext, actions = this) }
+    private val mainActivity: MainActivity by lazy { activity as MainActivity }
+    private val viewModel: ShopGroupFragmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return mBinding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeGroups()
-        mViewModel.handle(ShopGroupListFragmentIntent.GetAllGroups)
+        viewModel.handle(ShopGroupListFragmentIntent.GetAllGroups)
         setupAdapter()
         setupSearch()
         setListenters()
     }
 
-    private fun setListenters() = mBinding.run {
+    private fun setListenters() = binding.run {
         botaozinho.setOnClickListener {
-            val binding = CreateCustomDialogBinding.inflate(mMainActivity.layoutInflater)
+            val binding = CreateCustomDialogBinding.inflate(mainActivity.layoutInflater)
 
-            val dialogBuilder = AlertDialog.Builder(mMainActivity)
+            val dialogBuilder = AlertDialog.Builder(mainActivity)
 
             val dialog = dialogBuilder.setView(binding.root).create()
 
@@ -63,7 +63,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
                 }
 
                 confirmButton.setOnClickListener {
-                    mViewModel.handle(ShopGroupListFragmentIntent
+                    viewModel.handle(ShopGroupListFragmentIntent
                     .JoinGroup(binding.inputName.text.toString()))
 //                        .OnAdded(ShopGroup(binding.inputName.text.toString())))
                     dialog.cancel()
@@ -76,21 +76,21 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
 
     override fun onResume() {
         super.onResume()
-        mMainActivity.fabCallback = this::fabClicked
+        mainActivity.fabCallback = this::fabClicked
     }
 
-    override fun onClick(groupId: String) = findNavController().run {
-        navigate(ShopGroupFragmentDirections.actionShopGroupFragmentToShopItemFragment(groupId))
+    override fun onClick(group: ShopGroup) = findNavController().run {
+        navigate(ShopGroupFragmentDirections.actionShopGroupFragmentToShopItemFragment(group))
     }
 
     override fun onLongClick(group: ShopGroup) {
-        mViewModel.handle(ShopGroupListFragmentIntent.OnClickShare(group))
+        viewModel.handle(ShopGroupListFragmentIntent.OnClickShare(group))
     }
 
     override fun fabClicked() {
-        val binding = CreateCustomDialogBinding.inflate(mMainActivity.layoutInflater)
+        val binding = CreateCustomDialogBinding.inflate(mainActivity.layoutInflater)
 
-        val dialogBuilder = AlertDialog.Builder(mMainActivity)
+        val dialogBuilder = AlertDialog.Builder(mainActivity)
 
         val dialog = dialogBuilder.setView(binding.root).create()
 
@@ -100,7 +100,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             }
 
             confirmButton.setOnClickListener {
-                mViewModel.handle(ShopGroupListFragmentIntent
+                viewModel.handle(ShopGroupListFragmentIntent
 //                    .JoinGroup(binding.inputName.text.toString()))
                     .OnAdded(ShopGroup(name = binding.inputName.text.toString())))
                 dialog.cancel()
@@ -112,11 +112,11 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
     }
 
     private fun setupAdapter() {
-        mBinding.myRecyclerView.adapter = mAdapter
+        binding.myRecyclerView.adapter = adapter
     }
 
     private fun observeGroups() = lifecycleScope.launchWhenStarted {
-        mViewModel.state.collect {
+        viewModel.state.collect {
             when (it) {
                 is ShopGroupListFragmentState.GetAllGroups -> showGroups(it.groupList)
                 is ShopGroupListFragmentState.OnAddedError -> showError(it.message, it.code)
@@ -139,15 +139,15 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
     }
 
     private fun showGroups(groupList: List<ShopGroup>) {
-            mAdapter.update(groupList)
+            adapter.update(groupList)
     }
 
     private fun setupSearch() {
-        mBinding.groupSearchView.addTextListenter(
+        binding.groupSearchView.addTextListenter(
             onQuerySubmit = { query ->
                 Log.d("onQueryTextSubmit", "$query")
                 //query?.let {
-                    mViewModel.handle(ShopGroupListFragmentIntent.SearchGroup(query?:""))
+                    viewModel.handle(ShopGroupListFragmentIntent.SearchGroup(query?:""))
               //  }
 
             },

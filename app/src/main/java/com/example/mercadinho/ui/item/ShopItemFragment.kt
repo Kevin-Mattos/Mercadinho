@@ -23,35 +23,39 @@ import kotlinx.coroutines.flow.collect
 class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.FabAction {
 
     private val args: ShopItemFragmentArgs by navArgs()
-    private val mBinding by lazy { FragmentShopItemBinding.inflate(layoutInflater) }
-    private val mAdapter by lazy { ShopItemAdapter(mMainActivity.applicationContext, actions = this) }
-    private val mMainActivity : MainActivity by lazy { activity as MainActivity }
-    private val mViewModel: ShopItemFragmentViewModel by viewModels()
+    private val binding by lazy { FragmentShopItemBinding.inflate(layoutInflater) }
+    private val adapter by lazy { ShopItemAdapter(mainActivity.applicationContext, actions = this) }
+    private val mainActivity : MainActivity by lazy { activity as MainActivity }
+    private val viewModel: ShopItemFragmentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mViewModel.groupId = args.groupId?: ""
+        viewModel.group = args.group
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return mBinding.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
         setupAdapter()
-        mViewModel.handle(ShopItemListFragmentIntent.GetAllItensById)
+        viewModel.handle(ShopItemListFragmentIntent.GetAllItensById)
         setView()
     }
 
     private fun setView() {
-        mBinding.groupSearchView.addTextListenter(
+        binding.groupName.text = viewModel.group.name
+        binding.groupName.setOnClickListener {
+            //OPENDETAILS
+        }
+        binding.groupSearchView.addTextListenter(
             onQuerySubmit = { query ->
                 Log.d("onQueryTextSubmit", "$query")
                 //query?.let {
-                mViewModel.handle(ShopItemListFragmentIntent.OnQuery(query ?: ""))
+                viewModel.handle(ShopItemListFragmentIntent.OnQuery(query ?: ""))
                 //  }
 
             },
@@ -66,22 +70,22 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
 
     override fun onResume() {
         super.onResume()
-        mMainActivity.fabCallback = this::fabClicked
+        mainActivity.fabCallback = this::fabClicked
     }
 
     override fun onClick(item: ShopItem) {
-        mViewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
+        viewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
     }
 
     override fun onCheckClick(item: ShopItem) {
-        mViewModel.handle(ShopItemListFragmentIntent.UpdateItem(item))
+        viewModel.handle(ShopItemListFragmentIntent.UpdateItem(item))
     }
 
     override fun fabClicked() {
 
-        val binding = CreateCustomDialogBinding.inflate(mMainActivity.layoutInflater)
+        val binding = CreateCustomDialogBinding.inflate(mainActivity.layoutInflater)
 
-        val dialogBuilder = AlertDialog.Builder(mMainActivity)
+        val dialogBuilder = AlertDialog.Builder(mainActivity)
 
         val dialog = dialogBuilder.setView(binding.root).create()
 
@@ -91,8 +95,8 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
             }
 
             confirmButton.setOnClickListener {
-                val item = ShopItem( mViewModel.groupId, binding.inputName.text.toString(), false)
-                mViewModel.handle(ShopItemListFragmentIntent.OnAdded(item))
+                val item = ShopItem( viewModel.group.id, binding.inputName.text.toString(), false)
+                viewModel.handle(ShopItemListFragmentIntent.OnAdded(item))
                 dialog.cancel()
             }
         }
@@ -100,13 +104,13 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     }
 
     private fun setupAdapter() {
-        mBinding.myRecyclerView.adapter = mAdapter
+        binding.myRecyclerView.adapter = adapter
     }
 
     private fun setupObserver() = lifecycleScope.launchWhenStarted {
-        mViewModel.state.collect {
+        viewModel.state.collect {
             when (it) {
-                is ShopItemListFragmentState.GetAllItensById -> mAdapter.update(it.shopItemList)
+                is ShopItemListFragmentState.GetAllItensById -> adapter.update(it.shopItemList)
             }
         }
     }

@@ -1,8 +1,5 @@
 package com.example.mercadinho.repository.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-
 data class ShopItem(
     val groupId: String,
     val name: String,
@@ -19,5 +16,4 @@ data class ShopItem(
             map["bought"] as Boolean
         ).apply { this.id = id }
     }
-
 }

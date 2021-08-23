@@ -18,6 +18,8 @@ import com.example.mercadinho.databinding.ActivityLoginBinding
 
 import com.example.mercadinho.R
 import com.example.mercadinho.getIntentForMainActivity
+import com.example.mercadinho.repository.local.LocalSharedPref
+import com.example.mercadinho.util.showToast
 import com.example.mercadinho.util.startActivitySlide
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
@@ -69,12 +71,12 @@ class LoginActivity : AppCompatActivity() {
                 // Successfully signed in
                 val user = FirebaseAuth.getInstance().currentUser
                 user?.email
+                LocalSharedPref.userName = binding.loginNickname.text.toString()
                 startActivitySlide(getIntentForMainActivity())
-                // ...
             } else {
                 val error = response?.error
+                error?.message?.let { showToast(it) }
             }
         }
     }
-
 }
