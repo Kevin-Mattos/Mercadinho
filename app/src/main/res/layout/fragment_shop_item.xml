@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.groups.ShopGroupFragment">
+    <TextView
+        android:id="@+id/group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/group_search_view"
@@ -19,16 +24,6 @@
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="12"
-        android:layout_below="@id/group_search_view"
         tools:listitem="@layout/shop_group_itemview" />
 
-    <Button
-        android:id="@+id/botaozinho"
-        android:layout_below="@id/group_search_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-
-</RelativeLayout>
-
-</layout>
+</LinearLayout>
