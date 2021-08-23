@@ -72,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
                 val user = FirebaseAuth.getInstance().currentUser
                 user?.email
                 LocalSharedPref.userName = binding.loginNickname.text.toString()
-                startActivitySlide(getIntentForMainActivity())
+                startActivitySlide(getIntentForMainActivity(), finalize = true)
             } else {
                 val error = response?.error
                 error?.message?.let { showToast(it) }

@@ -19,7 +19,7 @@ val USER_GROUP_KEY = "User-Group"
 val GROUP_USER_KEY = "Group-User"
 
 @Singleton
-class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRepository {
+class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRepository, ShopGroupDetailsRepository {
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_URL)
     private val groupsDbref: DatabaseReference = database.getReference(GROUPS_KEY)
     private val itemsDbref: DatabaseReference = database.getReference(ITEMS_KEY)

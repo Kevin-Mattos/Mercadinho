@@ -22,6 +22,10 @@
             android:name=".MainActivity"
             android:theme="@style/AcTheme" >
         </activity>
+        <activity
+            android:name=".ui.groupdetails.GroupDetailsActivity"
+            android:theme="@style/AcTheme" >
+        </activity>
     </application>
 
 </manifest>

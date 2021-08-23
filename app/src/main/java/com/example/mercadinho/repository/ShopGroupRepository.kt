@@ -16,6 +16,10 @@ interface ShopGroupRepository {
     fun leaveGroup(group: ShopGroup)
 }
 
+interface ShopGroupDetailsRepository {
+
+}
+
 interface ShopItemRepository {
     fun getItemByShopId(
         itemId: String, onUpdate: ((List<ShopItem>) -> Unit)? = null,

@@ -8,17 +8,34 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import com.example.mercadinho.R
 
-fun Activity.startActivitySlide(intent: Intent, requestCode: Int? = null) {
-    startActivityTransition(intent, R.anim.fui_slide_in_right, R.anim.fui_slide_out_left)
+fun Activity.startActivitySlide(
+    intent: Intent,
+    requestCode: Int? = null,
+    finalize: Boolean = false
+) {
+    startActivityTransition(
+        intent,
+        R.anim.fui_slide_in_right,
+        R.anim.fui_slide_out_left,
+        requestCode = requestCode,
+        finalize = finalize
+    )
 }
 
-fun Activity.startActivityTransition(intent: Intent, @AnimRes idAninIn :Int, @AnimRes idAninOut: Int, requestCode: Int? = null) {
+fun Activity.startActivityTransition(
+    intent: Intent,
+    @AnimRes idAninIn: Int,
+    @AnimRes idAninOut: Int,
+    requestCode: Int? = null,
+    finalize: Boolean = false
+) {
 
-    if(requestCode == null)
+    if (requestCode == null)
         startActivity(intent)
     else startActivityForResult(intent, requestCode)
     overridePendingTransition(idAninIn, idAninOut)
-
+    if (finalize)
+        finish()
 }
 
 fun AppCompatActivity.makeTransaction(execute: FragmentTransaction.() -> Unit) {
