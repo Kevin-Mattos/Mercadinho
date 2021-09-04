@@ -13,4 +13,6 @@
     <string name="login_failed">"Login failed"</string>
     <string name="login_with_google">Login with google</string>
     <string name="optional_nickname">Apelido (Opcional)</string>
+    <string name="description_hint">Descrição</string>
+    <string name="leave_group">Sair Do Grupo</string>
 </resources>

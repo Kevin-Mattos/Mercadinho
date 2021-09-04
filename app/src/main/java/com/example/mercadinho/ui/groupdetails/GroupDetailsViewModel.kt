@@ -24,7 +24,18 @@ class GroupDetailsViewModel @Inject constructor(private val repository: ShopGrou
             is GroupDetailsIntent.GiveAdmin -> giveAdmin(intent.user)
             is GroupDetailsIntent.RemoveUser -> removeUser(intent.user)
             is GroupDetailsIntent.EditGroupDescription -> editGroupDescription(intent.description)
+            is GroupDetailsIntent.IdClicked -> idCLicked()
+            GroupDetailsIntent.LeaveGroup -> leaveGroup()
         }
+    }
+
+    private fun leaveGroup() {
+//        todo repository.leaveGroup
+        _state.value = GroupDetailsState.LeaveGroup
+    }
+
+    private fun idCLicked() {
+        _state.value = GroupDetailsState.CopyId(shopGroup.id)
     }
 
     private fun editGroupDescription(description: String) {

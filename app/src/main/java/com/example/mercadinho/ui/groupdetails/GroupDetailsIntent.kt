@@ -10,4 +10,7 @@ sealed class GroupDetailsIntent {
     data class EditGroupDescription(val description: String): GroupDetailsIntent()
     data class RemoveUser(val user: UserInfo): GroupDetailsIntent()
     data class GiveAdmin(val user: UserInfo): GroupDetailsIntent()
+    object IdClicked: GroupDetailsIntent()
+    object LeaveGroup: GroupDetailsIntent()
+
 }

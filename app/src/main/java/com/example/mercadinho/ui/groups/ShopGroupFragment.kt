@@ -120,7 +120,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             when (it) {
                 is ShopGroupListFragmentState.GetAllGroups -> showGroups(it.groupList)
                 is ShopGroupListFragmentState.OnAddedError -> showError(it.message, it.code)
-                is ShopGroupListFragmentState.ShareGroup -> copyId(it.group)
+                is ShopGroupListFragmentState.ShareGroup -> {}//copyId(it.group)
             }
         }
     }
