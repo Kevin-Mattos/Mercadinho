@@ -1,14 +1,18 @@
 package com.example.mercadinho.ui.groupdetails
 
 import android.os.Bundle
+import com.example.mercadinho.repository.ShopGroupDetailsRepository
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.UserInfo
 import com.example.mercadinho.ui.groupdetails.GroupDetailsActivity.Companion.GROUP
 import com.example.mercadinho.util.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+@HiltViewModel
+class GroupDetailsViewModel @Inject constructor(private val repository: ShopGroupDetailsRepository)
+    : BaseViewModel<GroupDetailsIntent, GroupDetailsState>() {
 
-class GroupDetailsViewModel : BaseViewModel<GroupDetailsIntent, GroupDetailsState>() {
-
-    lateinit var shopGroup: ShopGroup
+    private lateinit var shopGroup: ShopGroup
 
     override val initialState: GroupDetailsState
         get() = GroupDetailsState.InitialState
@@ -24,23 +28,35 @@ class GroupDetailsViewModel : BaseViewModel<GroupDetailsIntent, GroupDetailsStat
     }
 
     private fun editGroupDescription(description: String) {
-
+        repository.editGroupDescription(shopGroup, description)
     }
 
     private fun editGroupTitle(title: String) {
-
+        repository.editGroupName(shopGroup, title)
     }
 
     private fun removeUser(user: UserInfo) {
-
+        repository.removeUser(shopGroup, user)
     }
 
     private fun giveAdmin(user: UserInfo) {
+        repository.giveAdmin(shopGroup, user)
+    }
 
+    private fun showGroupDetails(group: ShopGroup) {
+        val id = shopGroup.id
+        shopGroup = group.also { it.id = id }
+
+        _state.value = GroupDetailsState.ShowDetails(shopGroup)
+    }
+
+    private fun showParticipants(participants: List<UserInfo>) {
+        _state.value = GroupDetailsState.ShowParticipants(participants)
     }
 
     private fun getArgs(args: Bundle) {
         shopGroup = args.get(GROUP) as ShopGroup
         _state.value = GroupDetailsState.ShowDetails(shopGroup)
+        repository.getGroup(shopGroup, ::showGroupDetails, ::showParticipants)
     }
 }

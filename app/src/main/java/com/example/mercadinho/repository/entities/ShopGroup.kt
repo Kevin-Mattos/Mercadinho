@@ -18,4 +18,14 @@ class ShopGroup(
         if (name.isEmpty())
             throw RuntimeException("Name cannot be empty")
     }
+
+    companion object {
+        fun fromMap(map: HashMap<String, Any>): ShopGroup {
+            return ShopGroup(
+                id = (map[ShopGroup::id.name] as String?).orEmpty(),
+                name = (map[ShopGroup::name.name] as String?).orEmpty(),
+                user = (map[ShopGroup::user.name] as String?).orEmpty(),
+                description =(map[ShopGroup::description.name] as String?).orEmpty())
+        }
+    }
 }

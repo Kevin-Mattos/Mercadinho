@@ -3,6 +3,7 @@ package com.example.mercadinho.ui.groupdetails
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -10,12 +11,14 @@ import com.example.mercadinho.databinding.ActivityGroupDetailsBinding
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.UserInfo
 import com.example.mercadinho.ui.groupdetails.GroupDetailsActivity.Companion.GROUP
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
+@AndroidEntryPoint
 class GroupDetailsActivity: AppCompatActivity() {
 
-    val binding by lazy { ActivityGroupDetailsBinding.inflate(layoutInflater) }
-    val viewModel: GroupDetailsViewModel by viewModels()
+    private val binding by lazy { ActivityGroupDetailsBinding.inflate(layoutInflater) }
+    private val viewModel: GroupDetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +38,11 @@ class GroupDetailsActivity: AppCompatActivity() {
     }
 
     private fun showParticipants(participants: List<UserInfo>) {
-
+        Log.d("remover", "$participants")
     }
 
     private fun showDetails(shopGroup: ShopGroup) {
-
+        Log.d("remover", "$shopGroup")
     }
 
     private fun getArgs() {

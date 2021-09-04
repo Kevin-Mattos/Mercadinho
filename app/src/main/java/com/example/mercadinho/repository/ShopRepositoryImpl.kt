@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.mercadinho.BuildConfig.FIREBASE_REALTIME_URL
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
+import com.example.mercadinho.repository.entities.UserInfo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -42,14 +43,15 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
                         snapShot.key?.let {
                             watchGroup(it)
                             val group = snapShot.value as HashMap<String, Any>
-                            onGroupAdded(ShopGroup(it, group["name"] as String))
+                            group[ShopGroup::id.name] = it
+                            onGroupAdded(ShopGroup.fromMap(group))
                         }
 
                     },
                         onChildChanged = { dataSnapshot, s ->
                             dataSnapshot.key?.let {
                                 val groupMap = dataSnapshot.value as HashMap<String, Any>
-                                onGroupChanged(ShopGroup(it, groupMap["name"] as String))
+                                onGroupChanged(ShopGroup.fromMap(groupMap))
                             }
                         },
                         onChildRemoved = { dataSnapshot, event ->
@@ -65,19 +67,20 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
             val value = it.value as Map<String, Any>
             userGroup.child(this.user!!.uid).child(key).setValue(
                 mapOf(
-                    "name" to value["name"]
+                    ShopGroup::name.name to value[ShopGroup::name.name]
                 )
             )
         }
     }
 
-    override fun addGroupFB(group: ShopGroup) {
+    override fun addGroupFB(group: ShopGroup, userInfo: UserInfo) {
         user?.let { user ->
             val newGroupId = groupsDbref.push().key ?: ""
+            val completeInfo = userInfo.copy(id = user.uid, name = user.displayName, profileUrl = user.photoUrl?.toString())
             group.user = user.uid
             val map: HashMap<String, Any> = hashMapOf()
             map["$GROUPS_KEY/$newGroupId"] = group
-            map["$GROUP_USER_KEY/$newGroupId/${user.uid}"] = user.displayName as Any //todo true
+            map["$GROUP_USER_KEY/$newGroupId/${user.uid}"] = completeInfo
             map["$USER_GROUP_KEY/${user.uid}/$newGroupId"] = group
             database.reference.updateChildren(map)
         }
@@ -126,13 +129,14 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
         itemsDbref.child(item.groupId).child(item.id).child("bought").setValue(item.bought)
     }
 
-    override fun joinGroup(groupId: String, failedToJoin: (() -> Unit)?) {
+    override fun joinGroup(groupId: String, userInfo: UserInfo, failedToJoin: (() -> Unit)?) {
         user?.let { user ->
             database.reference.child(GROUPS_KEY).child(groupId).singleValueEvent(onSnapshot = {
                 if (it.exists()) {
                     val map: HashMap<String, Any?> = hashMapOf()
-                    map["$GROUP_USER_KEY/$groupId/${user.uid}"] = user.displayName
-                    map["$USER_GROUP_KEY/${user.uid}/$groupId"] = ShopGroup(it.key!!, "nome")
+                    val completeInfo = userInfo.copy(id = user.uid, name = user.displayName, profileUrl = user.photoUrl?.toString())
+                    map["$GROUP_USER_KEY/$groupId/${user.uid}"] = completeInfo
+                    map["$USER_GROUP_KEY/${user.uid}/$groupId"] = ShopGroup(it.key!!, "nome")//TODO PEGAR O RESTO
                     database.reference.updateChildren(map)
                 } else
                     failedToJoin?.invoke()
@@ -148,6 +152,72 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
             map["$USER_GROUP_KEY/${user.uid}/$joinGroupId"] = null
             database.reference.updateChildren(map)
         }
+    }
+
+    override fun editGroupDescription(group: ShopGroup, description: String) {
+        user?.let {
+            val map: HashMap<String, Any?> = hashMapOf()
+            map["$GROUPS_KEY/${group.id}/${ShopGroup::description.name}"] = description
+            database.reference.updateChildren(map)
+        }
+    }
+
+    override fun editGroupName(group: ShopGroup, name: String) {
+        user?.let {
+            val map: HashMap<String, Any?> = hashMapOf()
+            map["$GROUPS_KEY/${group.id}/${ShopGroup::name.name}"] = name
+            database.reference.updateChildren(map)
+        }
+    }
+
+    override fun removeUser(group: ShopGroup, user: UserInfo) {
+        this.user?.let {
+            val map: HashMap<String, Any?> = hashMapOf()
+            map["$GROUP_USER_KEY/${group.id}/${user.id}"] = null
+//            map["$USER_GROUP_KEY/${user.id}/${group.id}"] = null
+            database.reference.updateChildren(map)
+        }
+    }
+
+    override fun giveAdmin(group: ShopGroup, user: UserInfo) {
+        this.user?.let {
+            val map: HashMap<String, Any?> = hashMapOf()
+            map["$GROUP_USER_KEY/${group.id}/${user.isAdmin}"] = true
+            database.reference.updateChildren(map)
+        }
+    }
+
+    override fun getGroup(group: ShopGroup,
+                          onGroupDetailsUpdated: ((ShopGroup) -> Unit),
+                          onGroupParticipantsUpdated: ((List<UserInfo>) -> Unit)) {
+            user?.let {
+                database.reference.child(GROUPS_KEY).child(group.id).valueEventListener(
+                    onUpdate = { map ->
+                        map?.let {
+                            onGroupDetailsUpdated(ShopGroup.fromMap(it as HashMap<String, Any>))
+                        }
+                    }
+                )
+
+                database.reference.child(GROUP_USER_KEY).child(group.id).valueEventListener(
+                    onUpdate = { map ->
+                        //TODO MELHORAR ISSO
+                        map?.let {
+                            val part = it.map { userMap ->
+                                val user = it[userMap.key] as Map<String, Any>
+                                UserInfo(
+                                    id = user[UserInfo::id.name] as String?,
+                                    name = user[UserInfo::name.name] as String?,
+                                    nickName = user[UserInfo::nickName.name] as String?,
+                                    profileUrl = user[UserInfo::profileUrl.name] as String?,
+                                    isAdmin = user[UserInfo::isAdmin.name] as Boolean? ?: false
+                                )
+                            }
+                            onGroupParticipantsUpdated(part)
+                        }
+                    }
+                )
+            }
     }
 }
 

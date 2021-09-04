@@ -9,8 +9,8 @@ object LocalSharedPref {
 
     lateinit var sharedPreferences: SharedPreferences
 
-    var userName: String?
-    get() = sharedPreferences.getString(userName, null)
+    var userName: String? = null
+    get() = sharedPreferences.getString(field, null)
     set(value) = sharedPreferences.edit().putString(USER_NAME, value).apply()
 
 }

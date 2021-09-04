@@ -50,8 +50,8 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     private fun setView() {
         binding.groupName.text = viewModel.group.name
         binding.groupName.setOnClickListener {
-            context?.let {
-                startActivity(it.CreateDetailsActivityIntent(viewModel.group))
+            context?.let { context ->
+                startActivity(context.CreateDetailsActivityIntent(viewModel.group))
             }
         }
         binding.groupSearchView.addTextListenter(
