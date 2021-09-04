@@ -7,7 +7,6 @@ sealed class ShopGroupListFragmentIntent {
     data class OnAdded(val shopGroup: ShopGroup) : ShopGroupListFragmentIntent()
     data class RemoveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
     data class SearchGroup(val query: String) : ShopGroupListFragmentIntent()
-    data class LeaveGroup(val group: ShopGroup) : ShopGroupListFragmentIntent()
     data class JoinGroup(val groupId: String) : ShopGroupListFragmentIntent()
     data class OnClickShare(val group: ShopGroup) : ShopGroupListFragmentIntent()
 }

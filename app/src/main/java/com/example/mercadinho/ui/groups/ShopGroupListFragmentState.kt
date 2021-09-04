@@ -1,5 +1,6 @@
 package com.example.mercadinho.ui.groups
 
+import androidx.annotation.StringRes
 import com.example.mercadinho.repository.entities.ShopGroup
 
 sealed class ShopGroupListFragmentState {
@@ -11,4 +12,5 @@ sealed class ShopGroupListFragmentState {
         }
     }
     data class ShareGroup(val group: ShopGroup) : ShopGroupListFragmentState()
+    data class FailedToJoin(@StringRes val reasonId: Int) : ShopGroupListFragmentState()
 }

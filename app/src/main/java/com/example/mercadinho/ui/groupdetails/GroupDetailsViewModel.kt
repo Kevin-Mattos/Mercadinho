@@ -30,7 +30,7 @@ class GroupDetailsViewModel @Inject constructor(private val repository: ShopGrou
     }
 
     private fun leaveGroup() {
-//        todo repository.leaveGroup
+        repository.leaveGroup(shopGroup)
         _state.value = GroupDetailsState.LeaveGroup
     }
 

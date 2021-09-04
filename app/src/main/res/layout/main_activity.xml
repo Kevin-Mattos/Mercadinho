@@ -13,20 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
-            app:navigationIcon="@drawable/ic_baseline_arrow_back_ios_24">
-
-            <TextView
-                android:id="@+id/my_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:singleLine="true"
-                android:textSize="16sp"
-                tools:text="Gerenciamento de chaves"
-                />
-
-        </androidx.appcompat.widget.Toolbar>
+            android:gravity="center" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -40,16 +27,6 @@
                 android:layout_height="match_parent"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/nav_graph" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_fab_add_24"
-                android:contentDescription="plus" />
-
 
         </FrameLayout>
 

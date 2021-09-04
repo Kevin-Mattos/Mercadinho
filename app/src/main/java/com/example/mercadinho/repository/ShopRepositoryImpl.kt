@@ -51,6 +51,7 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
                         onChildChanged = { dataSnapshot, s ->
                             dataSnapshot.key?.let {
                                 val groupMap = dataSnapshot.value as HashMap<String, Any>
+                                groupMap[ShopGroup::id.name] = it
                                 onGroupChanged(ShopGroup.fromMap(groupMap))
                             }
                         },
@@ -64,12 +65,14 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
 
     private fun watchGroup(key: String) {
         groupsDbref.child(key).valueEventListener {
-            val value = it.value as Map<String, Any>
-            userGroup.child(this.user!!.uid).child(key).setValue(
-                mapOf(
-                    ShopGroup::name.name to value[ShopGroup::name.name]
+            val value = it.value as Map<String, Any>?
+            value ?.let {
+                userGroup.child(this.user!!.uid).child(key).setValue(
+                    mapOf(
+                        ShopGroup::name.name to value[ShopGroup::name.name]
+                    )
                 )
-            )
+            }
         }
     }
 

@@ -14,7 +14,6 @@ interface ShopGroupRepository {
     fun addGroupFB(group: ShopGroup, userInfo: UserInfo)
     fun removeGroupFB(group: ShopGroup)
     fun joinGroup(groupId: String, userInfo: UserInfo, failedToJoin: (() -> Unit)? = null)
-    fun leaveGroup(group: ShopGroup)
 }
 
 interface ShopGroupDetailsRepository {
@@ -25,6 +24,7 @@ interface ShopGroupDetailsRepository {
     fun getGroup(group: ShopGroup,
                  onGroupDetailsUpdated: ((ShopGroup) -> Unit),
                  onGroupParticipantsUpdated: ((List<UserInfo>) -> Unit))
+    fun leaveGroup(group: ShopGroup)
 }
 
 interface ShopItemRepository {
