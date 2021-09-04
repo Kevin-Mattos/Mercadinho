@@ -14,6 +14,7 @@ import com.example.mercadinho.MainActivity
 import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
+import com.example.mercadinho.ui.groupdetails.CreateDetailsActivityIntent
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +50,9 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     private fun setView() {
         binding.groupName.text = viewModel.group.name
         binding.groupName.setOnClickListener {
-            //OPENDETAILS
+            context?.let { context ->
+                startActivity(context.CreateDetailsActivityIntent(viewModel.group))
+            }
         }
         binding.groupSearchView.addTextListenter(
             onQuerySubmit = { query ->

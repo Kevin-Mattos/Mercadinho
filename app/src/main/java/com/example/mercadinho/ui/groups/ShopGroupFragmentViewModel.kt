@@ -1,8 +1,11 @@
 package com.example.mercadinho.viewmodels
 
+import android.content.SharedPreferences
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.add
 import com.example.mercadinho.repository.entities.ShopGroup
+import com.example.mercadinho.repository.entities.UserInfo
+import com.example.mercadinho.repository.local.LocalSharedPref
 import com.example.mercadinho.repository.remove
 import com.example.mercadinho.ui.groups.ShopGroupListFragmentIntent
 import com.example.mercadinho.ui.groups.ShopGroupListFragmentState
@@ -63,7 +66,8 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
     private fun insertShopGroup(shopGroup: ShopGroup) {
         try {
             shopGroup.validate()
-            shopRepository.addGroupFB(shopGroup)
+            val userInfo = UserInfo(nickName = LocalSharedPref.userName, isAdmin = true)
+            shopRepository.addGroupFB(shopGroup, userInfo)
         } catch (e: RuntimeException) {
             _state.value = ShopGroupListFragmentState.OnAddedError(
                 e.message ?: "Unexpected failure",
@@ -73,7 +77,8 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
     }
 
     private fun joinGroup(groupId: String) {
-        shopRepository.joinGroup(groupId)
+        val userInfo = UserInfo(nickName = LocalSharedPref.userName)
+        shopRepository.joinGroup(groupId, userInfo)
     }
 
     private fun leaveGroup(group: ShopGroup) = shopRepository.leaveGroup(group)

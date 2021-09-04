@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_ios_24" />
+
+        <TextView
+            android:id="@+id/group_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="GROUP_ID" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/medium_padding">
+
+            <ImageView
+                android:id="@+id/add_description_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="?android:selectableItemBackground"
+                android:src="@drawable/ic_fab_add_24" />
+
+            <TextView
+                android:id="@+id/group_description_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/add_description_ic"
+                android:layout_alignBottom="@+id/add_description_ic"
+                android:layout_toEndOf="@id/add_description_ic"
+                android:gravity="center"
+                android:text="@string/description_hint" />
+
+            <TextView
+                android:id="@+id/group_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/group_description_title"
+                android:layout_margin="@dimen/medium_padding"
+                android:layout_toEndOf="@id/add_description_ic"
+                tools:text="descricao"/>
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/participants_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="12"
+            tools:listitem="@layout/group_participant_itemview" />
+
+        <Button
+            android:id="@+id/leave_group_bt"
+            android:layout_margin="@dimen/medium_padding"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/leave_group"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

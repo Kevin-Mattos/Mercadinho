@@ -1,5 +1,6 @@
 package com.example.mercadinho.view.extensions
 
+import android.view.View
 import androidx.appcompat.widget.SearchView
 
 fun SearchView.addTextListenter(onTextChange: ((String?) -> Unit)? = null, onQuerySubmit: ((String?) -> Unit)? = null) {
@@ -15,4 +16,11 @@ fun SearchView.addTextListenter(onTextChange: ((String?) -> Unit)? = null, onQue
             return true
         }
     })
+}
+
+fun View.setVisible(visible: Boolean) {
+    visibility = if(visible)
+        View.VISIBLE
+    else
+        View.GONE
 }

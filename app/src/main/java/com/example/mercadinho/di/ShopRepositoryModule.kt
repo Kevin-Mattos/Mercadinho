@@ -1,5 +1,6 @@
 package com.example.mercadinho.di
 
+import com.example.mercadinho.repository.ShopGroupDetailsRepository
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.ShopItemRepository
 import com.example.mercadinho.repository.ShopRepositoryImpl
@@ -20,4 +21,8 @@ abstract class ShopModule {
     abstract fun bindShopItemRepository(
         shopRepositoryImpl: ShopRepositoryImpl
     ): ShopItemRepository
+    @Binds
+    abstract fun bindShopGroupDetailsRepository(
+        shopRepositoryImpl: ShopRepositoryImpl
+    ): ShopGroupDetailsRepository
 }
