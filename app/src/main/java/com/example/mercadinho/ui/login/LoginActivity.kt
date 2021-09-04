@@ -2,21 +2,9 @@ package com.example.mercadinho.ui.login
 
 import android.app.Activity
 import android.content.Intent
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.Toast
-import com.example.mercadinho.MainActivity
 import com.example.mercadinho.databinding.ActivityLoginBinding
-
-import com.example.mercadinho.R
 import com.example.mercadinho.getIntentForMainActivity
 import com.example.mercadinho.repository.local.LocalSharedPref
 import com.example.mercadinho.util.showToast

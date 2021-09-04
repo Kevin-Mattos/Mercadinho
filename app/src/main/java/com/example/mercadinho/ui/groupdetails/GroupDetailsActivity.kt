@@ -1,6 +1,6 @@
 package com.example.mercadinho.ui.groupdetails
 
-import android.app.AlertDialog
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -13,19 +13,17 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.mercadinho.R
 import com.example.mercadinho.databinding.ActivityGroupDetailsBinding
-import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.UserInfo
+import com.example.mercadinho.ui.createCustomInputDialog
 import com.example.mercadinho.ui.groupdetails.GroupDetailsActivity.Companion.GROUP
-import com.example.mercadinho.ui.groups.ShopGroupListFragmentIntent
 import com.example.mercadinho.util.showToast
 import com.example.mercadinho.view.extensions.setVisible
-import com.example.mercadinho.view.extensions.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class GroupDetailsActivity: AppCompatActivity() {
+class GroupDetailsActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityGroupDetailsBinding.inflate(layoutInflater) }
     private val viewModel: GroupDetailsViewModel by viewModels()
@@ -60,36 +58,26 @@ class GroupDetailsActivity: AppCompatActivity() {
         }
 
         addDescriptionIc.setOnClickListener {
-            val binding = CreateCustomDialogBinding.inflate(layoutInflater)
 
-            val dialogBuilder = AlertDialog.Builder(this@GroupDetailsActivity)
-
-            val dialog = dialogBuilder.setView(binding.root).create()
-
-            with(binding) {
-                cancelButton.setOnClickListener {
-                    dialog.cancel()
-                }
-
-                binding.inputName.setText(this@GroupDetailsActivity.binding.groupDescription.text)
-                binding.textInputLayout.setHint(R.string.description_hint)
-
-                confirmButton.setOnClickListener {
+            this@GroupDetailsActivity.createCustomInputDialog(
+                rightButtonAction = {
                     viewModel.handle(
                         GroupDetailsIntent.EditGroupDescription
-                        (description = binding.inputName.text.toString()))
-                    dialog.cancel()
-                }
-            }
-
-            dialog.show()
+                            (description = it)
+                    )
+                },
+                textHint = R.string.description_hint,
+                rightButtonText = R.string.change_description,
+                initialText = this@GroupDetailsActivity.binding.groupDescription.text.toString()
+            )
         }
     }
 
     private fun setupObserver() = lifecycleScope.launchWhenStarted {
         viewModel.state.collect { state ->
             when (state) {
-                GroupDetailsState.InitialState -> {}
+                GroupDetailsState.InitialState -> {
+                }
                 is GroupDetailsState.ShowDetails -> showDetails(state.shopGroup)
                 is GroupDetailsState.ShowParticipants -> showParticipants(state.participants)
                 is GroupDetailsState.CopyId -> copyId(state.id)
@@ -99,6 +87,7 @@ class GroupDetailsActivity: AppCompatActivity() {
     }
 
     private fun leaveGroup() {
+        setResult(Activity.RESULT_OK)
         finish()
     }
 
@@ -109,9 +98,7 @@ class GroupDetailsActivity: AppCompatActivity() {
     private fun showDetails(shopGroup: ShopGroup) = binding.run {
         toolbar.title = shopGroup.name
         groupId.text = shopGroup.id
-
         groupDescription.setVisible(visible = shopGroup.description.isNotEmpty())
-
         groupDescription.text = shopGroup.description
     }
 

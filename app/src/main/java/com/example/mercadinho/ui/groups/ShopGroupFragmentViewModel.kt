@@ -1,6 +1,6 @@
 package com.example.mercadinho.viewmodels
 
-import android.content.SharedPreferences
+import com.example.mercadinho.R
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.add
 import com.example.mercadinho.repository.entities.ShopGroup
@@ -41,7 +41,6 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
             is ShopGroupListFragmentIntent.RemoveGroup -> removeGroup(intent.group)
             is ShopGroupListFragmentIntent.SearchGroup -> queryGroups(intent.query)
             is ShopGroupListFragmentIntent.JoinGroup -> joinGroup(intent.groupId)
-            is ShopGroupListFragmentIntent.LeaveGroup -> leaveGroup(intent.group)
             is ShopGroupListFragmentIntent.OnClickShare -> shareGroup(intent.group)
         }
     }
@@ -78,10 +77,10 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
 
     private fun joinGroup(groupId: String) {
         val userInfo = UserInfo(nickName = LocalSharedPref.userName)
-        shopRepository.joinGroup(groupId, userInfo)
+        shopRepository.joinGroup(groupId, userInfo) {
+            _state.value = ShopGroupListFragmentState.FailedToJoin(R.string.failed_to_join)
+        }
     }
-
-    private fun leaveGroup(group: ShopGroup) = shopRepository.leaveGroup(group)
 
     private fun shareGroup(group: ShopGroup) {
         _state.value = ShopGroupListFragmentState.ShareGroup(group)

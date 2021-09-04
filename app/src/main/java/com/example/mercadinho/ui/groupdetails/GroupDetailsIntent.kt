@@ -1,7 +1,6 @@
 package com.example.mercadinho.ui.groupdetails
 
 import android.os.Bundle
-import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.UserInfo
 
 sealed class GroupDetailsIntent {

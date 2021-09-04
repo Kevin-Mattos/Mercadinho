@@ -1,23 +1,17 @@
 package com.example.mercadinho.ui.groups
 
-import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.mercadinho.MainActivity
 import com.example.mercadinho.R
-import com.example.mercadinho.databinding.CreateCustomDialogBinding
 import com.example.mercadinho.databinding.FragmentShopGroupBinding
 import com.example.mercadinho.repository.entities.ShopGroup
+import com.example.mercadinho.ui.createCustomInputDialog
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.view.extensions.showToast
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
@@ -26,12 +20,23 @@ import kotlinx.coroutines.flow.collect
 
 
 @AndroidEntryPoint
-class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity.FabAction {
+class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction {
 
     private val binding by lazy { FragmentShopGroupBinding.inflate(layoutInflater) }
-    private val adapter by lazy { ShopGroupAdapter(mainActivity.applicationContext, actions = this) }
+    private val adapter by lazy {
+        ShopGroupAdapter(
+            mainActivity.applicationContext,
+            actions = this
+        )
+    }
     private val mainActivity: MainActivity by lazy { activity as MainActivity }
     private val viewModel: ShopGroupFragmentViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,32 +56,41 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
 
     private fun setListenters() = binding.run {
         botaozinho.setOnClickListener {
-            val binding = CreateCustomDialogBinding.inflate(mainActivity.layoutInflater)
-
-            val dialogBuilder = AlertDialog.Builder(mainActivity)
-
-            val dialog = dialogBuilder.setView(binding.root).create()
-
-            with(binding) {
-                cancelButton.setOnClickListener {
-                    dialog.cancel()
-                }
-
-                confirmButton.setOnClickListener {
-                    viewModel.handle(ShopGroupListFragmentIntent
-                    .JoinGroup(binding.inputName.text.toString()))
-//                        .OnAdded(ShopGroup(binding.inputName.text.toString())))
-                    dialog.cancel()
-                }
-            }
-
-            dialog.show()
+           joinGroup()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainActivity.fabCallback = this::fabClicked
+    private fun joinGroup() {
+
+        requireContext().createCustomInputDialog(
+            rightButtonAction = {
+                viewModel.handle(
+                    ShopGroupListFragmentIntent
+                        .JoinGroup(it)
+                )
+            },
+            rightButtonText = R.string.action_join_group,
+            textHint = R.string.group_name
+        )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.group_options_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.add_group -> {
+                createGroup()
+                true
+            }
+            R.id.join_group -> {
+                joinGroup()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onClick(group: ShopGroup) = findNavController().run {
@@ -87,28 +101,17 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
         viewModel.handle(ShopGroupListFragmentIntent.OnClickShare(group))
     }
 
-    override fun fabClicked() {
-        val binding = CreateCustomDialogBinding.inflate(mainActivity.layoutInflater)
+    private fun createGroup() {
 
-        val dialogBuilder = AlertDialog.Builder(mainActivity)
-
-        val dialog = dialogBuilder.setView(binding.root).create()
-
-        with(binding) {
-            cancelButton.setOnClickListener {
-                dialog.cancel()
-            }
-
-            confirmButton.setOnClickListener {
-                viewModel.handle(ShopGroupListFragmentIntent
-//                    .JoinGroup(binding.inputName.text.toString()))
-                    .OnAdded(ShopGroup(name = binding.inputName.text.toString())))
-                dialog.cancel()
-            }
-        }
-
-        dialog.show()
-
+        requireContext().createCustomInputDialog(
+            rightButtonAction = {
+                viewModel.handle(
+                    ShopGroupListFragmentIntent
+                        .OnAdded(ShopGroup(name = it))
+                )
+            },
+            textHint = R.string.group_name
+        )
     }
 
     private fun setupAdapter() {
@@ -120,26 +123,28 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             when (it) {
                 is ShopGroupListFragmentState.GetAllGroups -> showGroups(it.groupList)
                 is ShopGroupListFragmentState.OnAddedError -> showError(it.message, it.code)
-                is ShopGroupListFragmentState.ShareGroup -> {}//copyId(it.group)
+                is ShopGroupListFragmentState.ShareGroup -> {
+                }//copyId(it.group)
+                is ShopGroupListFragmentState.FailedToJoin -> showError(it.reasonId)
             }
         }
     }
 
-    private fun copyId(group: ShopGroup) {
-        val clipboard = getSystemService<ClipboardManager>(requireContext(), ClipboardManager::class.java)
-        val clip = ClipData.newPlainText("Groupid:", "Para se juntar ao meu grupo, entre em : ${group.id}")
-        clipboard?.setPrimaryClip(clip);
-        showToast("Id copiado :D")
+    private fun showError(messageId: Int) {
+        showToast(getString(messageId))
     }
 
-    private fun showError(message: String, code: ShopGroupListFragmentState.OnAddedError.AddErrorCodes) {
+    private fun showError(
+        message: String,
+        code: ShopGroupListFragmentState.OnAddedError.AddErrorCodes
+    ) {
         Log.e(TAG, message)
-        if(code == ShopGroupListFragmentState.OnAddedError.AddErrorCodes.INVALID_NAME)
+        if (code == ShopGroupListFragmentState.OnAddedError.AddErrorCodes.INVALID_NAME)
             showToast(getString(R.string.error_group_invalid_name))
     }
 
     private fun showGroups(groupList: List<ShopGroup>) {
-            adapter.update(groupList)
+        adapter.update(groupList)
     }
 
     private fun setupSearch() {
@@ -147,8 +152,8 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
             onQuerySubmit = { query ->
                 Log.d("onQueryTextSubmit", "$query")
                 //query?.let {
-                    viewModel.handle(ShopGroupListFragmentIntent.SearchGroup(query?:""))
-              //  }
+                viewModel.handle(ShopGroupListFragmentIntent.SearchGroup(query ?: ""))
+                //  }
 
             },
             onTextChange = { text ->
@@ -161,7 +166,7 @@ class ShopGroupFragment : Fragment(), ShopGroupAdapter.GroupAction, MainActivity
     }
 
 
-    companion object{
+    companion object {
         const val TAG = "ShopGroupFragment"
     }
 }

@@ -2,6 +2,12 @@
     <string name="app_name">Mercadinho</string>
     <string name="label_group">Grupo</string>
     <string name="label_item">Item</string>
+
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_create">Criar</string>
+    <string name="action_join_group">Entrar</string>
+
+
     <string name="error_group_invalid_name">Nome inválido!</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -15,4 +21,12 @@
     <string name="optional_nickname">Apelido (Opcional)</string>
     <string name="description_hint">Descrição</string>
     <string name="leave_group">Sair Do Grupo</string>
+    <string name="create_group">Criar grupo</string>
+    <string name="join_group">Entrar em um grupo</string>
+    <string name="failed_to_join">Falha ao entrar no grupo</string>
+
+    <string name="add_item">Adicionar item</string>
+    <string name="item_name">Nome Do Item</string>
+    <string name="group_name">Nome Do Grupo</string>
+    <string name="change_description">Alterar</string>
 </resources>

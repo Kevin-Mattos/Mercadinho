@@ -1,27 +1,28 @@
 package com.example.mercadinho.ui.item
 
-import android.app.AlertDialog
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.mercadinho.MainActivity
-import com.example.mercadinho.databinding.CreateCustomDialogBinding
+import com.example.mercadinho.R
 import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
+import com.example.mercadinho.ui.createCustomInputDialog
 import com.example.mercadinho.ui.groupdetails.CreateDetailsActivityIntent
 import com.example.mercadinho.view.extensions.addTextListenter
+import com.example.mercadinho.view.extensions.startActivitySlide
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.FabAction {
+class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
 
     private val args: ShopItemFragmentArgs by navArgs()
     private val binding by lazy { FragmentShopItemBinding.inflate(layoutInflater) }
@@ -32,6 +33,7 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.group = args.group
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -47,11 +49,29 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
         setView()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.item_options_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.add_item -> {
+                addItem()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun setView() {
         binding.groupName.text = viewModel.group.name
         binding.groupName.setOnClickListener {
             context?.let { context ->
-                startActivity(context.CreateDetailsActivityIntent(viewModel.group))
+                startActivitySlide(
+                    context.CreateDetailsActivityIntent(viewModel.group),
+                    requestCode = GROUP_DETAILS_CODE
+                )
             }
         }
         binding.groupSearchView.addTextListenter(
@@ -71,9 +91,16 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainActivity.fabCallback = this::fabClicked
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            GROUP_DETAILS_CODE -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    requireActivity().onBackPressed()
+                }
+            }
+        }
+
     }
 
     override fun onClick(item: ShopItem) {
@@ -84,26 +111,15 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
         viewModel.handle(ShopItemListFragmentIntent.UpdateItem(item))
     }
 
-    override fun fabClicked() {
+    fun addItem() {
 
-        val binding = CreateCustomDialogBinding.inflate(mainActivity.layoutInflater)
-
-        val dialogBuilder = AlertDialog.Builder(mainActivity)
-
-        val dialog = dialogBuilder.setView(binding.root).create()
-
-        with(binding) {
-            cancelButton.setOnClickListener {
-                dialog.cancel()
-            }
-
-            confirmButton.setOnClickListener {
-                val item = ShopItem( viewModel.group.id, binding.inputName.text.toString(), false)
+        requireContext().createCustomInputDialog(
+            rightButtonAction = {
+                val item = ShopItem( viewModel.group.id, it, false)
                 viewModel.handle(ShopItemListFragmentIntent.OnAdded(item))
-                dialog.cancel()
-            }
-        }
-        dialog.show()
+            },
+            textHint = R.string.item_name
+        )
     }
 
     private fun setupAdapter() {
@@ -116,5 +132,8 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction, MainActivity.Fa
                 is ShopItemListFragmentState.GetAllItensById -> adapter.update(it.shopItemList)
             }
         }
+    }
+    companion object {
+        const val GROUP_DETAILS_CODE = 400
     }
 }
