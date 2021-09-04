@@ -41,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
     private fun checkLoggedIn() {
       val a = FirebaseAuth.AuthStateListener { firebaseAuth ->
             firebaseAuth.currentUser?.let {
-                startActivitySlide(getIntentForMainActivity())
+                startActivitySlide(getIntentForMainActivity(), finalize = true)
             }
         }
         FirebaseAuth.getInstance().addAuthStateListener(a)

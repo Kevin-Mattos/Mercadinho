@@ -19,12 +19,26 @@ class GroupDetailsActivity: AppCompatActivity() {
 
     private val binding by lazy { ActivityGroupDetailsBinding.inflate(layoutInflater) }
     private val viewModel: GroupDetailsViewModel by viewModels()
+    private val adapter: ShopGroupParticipantsAdapter by lazy {
+        val ad = ShopGroupParticipantsAdapter(applicationContext) {
+            Log.d("", "${GroupDetailsActivity::class.java.name} $it")
+        }
+        binding.participantsRv.adapter = ad
+        ad
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         getArgs()
         setupObserver()
+        setListeners()
+    }
+
+    private fun setListeners() {
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupObserver() = lifecycleScope.launchWhenStarted {
@@ -38,11 +52,11 @@ class GroupDetailsActivity: AppCompatActivity() {
     }
 
     private fun showParticipants(participants: List<UserInfo>) {
-        Log.d("remover", "$participants")
+        adapter.list = participants.toMutableList()
     }
 
     private fun showDetails(shopGroup: ShopGroup) {
-        Log.d("remover", "$shopGroup")
+        binding.toolbar.title = shopGroup.name
     }
 
     private fun getArgs() {
