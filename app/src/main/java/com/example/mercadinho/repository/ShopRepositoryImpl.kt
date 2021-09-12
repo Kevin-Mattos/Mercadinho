@@ -5,6 +5,7 @@ import com.example.mercadinho.BuildConfig.FIREBASE_REALTIME_URL
 import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.repository.entities.UserInfo
+import com.example.mercadinho.repository.local.LocalSharedPref
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -79,7 +80,7 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
     override fun addGroupFB(group: ShopGroup, userInfo: UserInfo) {
         user?.let { user ->
             val newGroupId = groupsDbref.push().key ?: ""
-            val completeInfo = userInfo.copy(id = user.uid, name = user.displayName, profileUrl = user.photoUrl?.toString())
+            val completeInfo = userInfo.copy(nickName = LocalSharedPref.userName, id = user.uid, name = user.displayName, profileUrl = user.photoUrl?.toString())
             group.user = user.uid
             val map: HashMap<String, Any> = hashMapOf()
             map["$GROUPS_KEY/$newGroupId"] = group
@@ -137,7 +138,7 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
             database.reference.child(GROUPS_KEY).child(groupId).singleValueEvent(onSnapshot = {
                 if (it.exists()) {
                     val map: HashMap<String, Any?> = hashMapOf()
-                    val completeInfo = userInfo.copy(id = user.uid, name = user.displayName, profileUrl = user.photoUrl?.toString())
+                    val completeInfo = userInfo.copy(nickName = LocalSharedPref.userName, id = user.uid, name = user.displayName, profileUrl = user.photoUrl?.toString())
                     map["$GROUP_USER_KEY/$groupId/${user.uid}"] = completeInfo
                     map["$USER_GROUP_KEY/${user.uid}/$groupId"] = ShopGroup(it.key!!, "nome")//TODO PEGAR O RESTO
                     database.reference.updateChildren(map)
