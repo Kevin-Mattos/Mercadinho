@@ -14,6 +14,7 @@ import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.ui.createCustomInputDialog
 import com.example.mercadinho.ui.groupdetails.CreateDetailsActivityIntent
+import com.example.mercadinho.ui.item.editItem.createEditItemIntent
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.view.extensions.startActivitySlide
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
@@ -89,12 +90,14 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
                 }
             }
         }
-
     }
 
     override fun onClick(item: ShopItem) {
-        //todo open remove/edit item
-        viewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
+        startActivitySlide(
+            requireContext().createEditItemIntent(
+                item = item
+            )
+        )
     }
 
     override fun onCheckClick(item: ShopItem) {

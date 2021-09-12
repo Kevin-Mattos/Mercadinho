@@ -6,5 +6,5 @@ import com.example.mercadinho.repository.entities.ShopItem
 sealed class EditItemIntent {
     data class InitArgs(val args: Bundle): EditItemIntent()
     object DeleteItem: EditItemIntent()
-    data class EditItem(val item: ShopItem): EditItemIntent()
+    data class EditItem(val itemName: String): EditItemIntent()
 }

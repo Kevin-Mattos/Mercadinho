@@ -51,3 +51,8 @@ fun AppCompatActivity.makeTransaction(execute: FragmentTransaction.() -> Unit) {
 fun AppCompatActivity.showToast(msg: String) {
     Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
 }
+
+fun AppCompatActivity.setResultAndFinish(result: Int = Activity.RESULT_OK) {
+    setResult(result)
+    finish()
+}

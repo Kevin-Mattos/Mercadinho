@@ -36,3 +36,8 @@ interface ShopItemRepository {
     fun removeItemFB(item: ShopItem)
     fun updateItem(item: ShopItem)
 }
+
+interface EditItemRepository {
+    fun updateItem(item: ShopItem, onUpdated: (() -> Unit)? = null)
+    fun removeItem(item: ShopItem, onRemoved: (() -> Unit)? = null)
+}

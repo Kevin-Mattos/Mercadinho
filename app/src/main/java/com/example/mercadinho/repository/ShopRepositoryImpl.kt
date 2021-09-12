@@ -21,7 +21,7 @@ val USER_GROUP_KEY = "User-Group"
 val GROUP_USER_KEY = "Group-User"
 
 @Singleton
-class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRepository, ShopGroupDetailsRepository {
+class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRepository, ShopGroupDetailsRepository, EditItemRepository {
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_URL)
     private val groupsDbref: DatabaseReference = database.getReference(GROUPS_KEY)
     private val itemsDbref: DatabaseReference = database.getReference(ITEMS_KEY)
@@ -107,20 +107,19 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
         onCanceled: ((DatabaseError) -> Unit)?
     ) {
         itemsDbref.child(itemId).valueEventListener(onUpdate = {
-            it?.let {
-                onUpdate?.invoke(it.map { map ->
+                onUpdate?.invoke(it?.map { map ->
                     ShopItem.fromMap(
                         map.key,
                         it[map.key] as HashMap<String, Any>
                     )
-                })
-            }
+                } ?: emptyList())
         }, onCanceled = onCanceled)
     }
 
     override fun addItem(item: ShopItem) {
         val id = groupsDbref.push().key
         id?.let {
+            item.id = it
             itemsDbref.child(item.groupId).child(it).setValue(item)
         }
     }
@@ -222,6 +221,16 @@ class ShopRepositoryImpl @Inject constructor() : ShopGroupRepository, ShopItemRe
                     }
                 )
             }
+    }
+
+    override fun updateItem(item: ShopItem, onUpdated: (() -> Unit)?) {
+        itemsDbref.child(item.groupId).child(item.id).child(ShopItem::name.name).setValue(item.name)
+        onUpdated?.invoke()
+    }
+
+    override fun removeItem(item: ShopItem, onRemoved: (() -> Unit)?) {
+        itemsDbref.child(item.groupId).child(item.id).removeValue()
+        onRemoved?.invoke()
     }
 }
 

@@ -26,6 +26,8 @@
     <string name="failed_to_join">Falha ao entrar no grupo</string>
 
     <string name="add_item">Adicionar item</string>
+    <string name="edit_item">Editar item</string>
+    <string name="remove_item">Remover item</string>
     <string name="item_name">Nome Do Item</string>
     <string name="group_name">Nome Do Grupo</string>
     <string name="change_description">Alterar</string>

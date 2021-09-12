@@ -1,9 +1,6 @@
 package com.example.mercadinho.di
 
-import com.example.mercadinho.repository.ShopGroupDetailsRepository
-import com.example.mercadinho.repository.ShopGroupRepository
-import com.example.mercadinho.repository.ShopItemRepository
-import com.example.mercadinho.repository.ShopRepositoryImpl
+import com.example.mercadinho.repository.*
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,4 +22,8 @@ abstract class ShopModule {
     abstract fun bindShopGroupDetailsRepository(
         shopRepositoryImpl: ShopRepositoryImpl
     ): ShopGroupDetailsRepository
+    @Binds
+    abstract fun bindEditItemRepository(
+        shopRepositoryImpl: ShopRepositoryImpl
+    ): EditItemRepository
 }
