@@ -3,7 +3,6 @@ package com.example.mercadinho.ui.item
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +14,7 @@ import com.example.mercadinho.databinding.FragmentShopItemBinding
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.ui.createCustomInputDialog
 import com.example.mercadinho.ui.groupdetails.CreateDetailsActivityIntent
+import com.example.mercadinho.ui.item.editItem.createEditItemIntent
 import com.example.mercadinho.view.extensions.addTextListenter
 import com.example.mercadinho.view.extensions.startActivitySlide
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
@@ -76,17 +76,7 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
         }
         binding.groupSearchView.addTextListenter(
             onQuerySubmit = { query ->
-                Log.d("onQueryTextSubmit", "$query")
-                //query?.let {
                 viewModel.handle(ShopItemListFragmentIntent.OnQuery(query ?: ""))
-                //  }
-
-            },
-            onTextChange = { text ->
-                Log.d("onTextChange", "$text")
-                text?.let {
-
-                }
             }
         )
     }
@@ -100,11 +90,14 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
                 }
             }
         }
-
     }
 
     override fun onClick(item: ShopItem) {
-        viewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
+        startActivitySlide(
+            requireContext().createEditItemIntent(
+                item = item
+            )
+        )
     }
 
     override fun onCheckClick(item: ShopItem) {
@@ -112,7 +105,6 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
     }
 
     fun addItem() {
-
         requireContext().createCustomInputDialog(
             rightButtonAction = {
                 val item = ShopItem( viewModel.group.id, it, false)

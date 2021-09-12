@@ -26,6 +26,11 @@
             android:name=".ui.groupdetails.GroupDetailsActivity"
             android:theme="@style/AcTheme" >
         </activity>
+
+        <activity
+            android:name=".ui.item.editItem.EditItemActivity"
+            android:theme="@style/AcTheme" >
+        </activity>
     </application>
 
 </manifest>

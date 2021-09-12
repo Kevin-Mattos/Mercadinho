@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         mBinding.toolbar.title = getString(R.string.app_name)
-        setSupportActionBar(mBinding.toolbar);
+        setSupportActionBar(mBinding.toolbar)
     }
 
     private fun setupBinding(): MainActivityBinding {

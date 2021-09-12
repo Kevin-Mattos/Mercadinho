@@ -17,6 +17,7 @@ import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.UserInfo
 import com.example.mercadinho.ui.createCustomInputDialog
 import com.example.mercadinho.ui.groupdetails.GroupDetailsActivity.Companion.GROUP
+import com.example.mercadinho.util.setResultAndFinish
 import com.example.mercadinho.util.showToast
 import com.example.mercadinho.view.extensions.setVisible
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,8 +88,7 @@ class GroupDetailsActivity : AppCompatActivity() {
     }
 
     private fun leaveGroup() {
-        setResult(Activity.RESULT_OK)
-        finish()
+        setResultAndFinish()
     }
 
     private fun showParticipants(participants: List<UserInfo>) {
