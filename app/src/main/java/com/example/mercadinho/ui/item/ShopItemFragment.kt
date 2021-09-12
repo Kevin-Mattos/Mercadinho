@@ -3,7 +3,6 @@ package com.example.mercadinho.ui.item
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -76,17 +75,7 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
         }
         binding.groupSearchView.addTextListenter(
             onQuerySubmit = { query ->
-                Log.d("onQueryTextSubmit", "$query")
-                //query?.let {
                 viewModel.handle(ShopItemListFragmentIntent.OnQuery(query ?: ""))
-                //  }
-
-            },
-            onTextChange = { text ->
-                Log.d("onTextChange", "$text")
-                text?.let {
-
-                }
             }
         )
     }
@@ -104,6 +93,7 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
     }
 
     override fun onClick(item: ShopItem) {
+        //todo open remove/edit item
         viewModel.handle(ShopItemListFragmentIntent.RemoveItem(item))
     }
 
@@ -112,7 +102,6 @@ class ShopItemFragment : Fragment(), ShopItemAdapter.ItemAction {
     }
 
     fun addItem() {
-
         requireContext().createCustomInputDialog(
             rightButtonAction = {
                 val item = ShopItem( viewModel.group.id, it, false)

@@ -1,10 +1,12 @@
 package com.example.mercadinho.repository.entities
 
+import java.io.Serializable
+
 data class ShopItem(
     val groupId: String,
     val name: String,
     var bought: Boolean
-) {
+): Serializable {
     override fun toString(): String {
         return "ShopItem(id=$id, groupId=$groupId, name='$name')"
     }
