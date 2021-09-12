@@ -65,7 +65,7 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
     private fun insertShopGroup(shopGroup: ShopGroup) {
         try {
             shopGroup.validate()
-            val userInfo = UserInfo(nickName = LocalSharedPref.userName, isAdmin = true)
+            val userInfo = UserInfo(isAdmin = true)
             shopRepository.addGroupFB(shopGroup, userInfo)
         } catch (e: RuntimeException) {
             _state.value = ShopGroupListFragmentState.OnAddedError(
@@ -76,7 +76,7 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
     }
 
     private fun joinGroup(groupId: String) {
-        val userInfo = UserInfo(nickName = LocalSharedPref.userName)
+        val userInfo = UserInfo()
         shopRepository.joinGroup(groupId, userInfo) {
             _state.value = ShopGroupListFragmentState.FailedToJoin(R.string.failed_to_join)
         }

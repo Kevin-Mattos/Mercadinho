@@ -3,6 +3,7 @@ package com.example.mercadinho.ui.gruoups
 import com.example.mercadinho.RxImmediateSchedulerRule
 import com.example.mercadinho.repository.ShopGroupRepository
 import com.example.mercadinho.repository.entities.ShopGroup
+import com.example.mercadinho.repository.entities.UserInfo
 import com.example.mercadinho.ui.groups.ShopGroupListFragmentIntent
 import com.example.mercadinho.ui.groups.ShopGroupListFragmentState
 import com.example.mercadinho.viewmodels.ShopGroupFragmentViewModel
@@ -103,33 +104,33 @@ class ShopGroupFragmentViewModelTest {
         )
     }
 
-    @Test
-    fun WHEN_leave_group_list_size_should_decrease() {
-        //prepare
-        val names = listOf("nome", "teste", "teste com nome", "sem Nome")
-        viewModel.groups.value.addAll(Array(names.size) { ShopGroup("${it}12123", names[it]) })
-        val newGroupName = "nome do grupo"
-
-        //action
-        viewModel.handle(ShopGroupListFragmentIntent.LeaveGroup(ShopGroup(name = newGroupName).apply {
-            id = "012123"
-        }))
-
-        //Assert
-        Assert.assertTrue(viewModel.state.value is ShopGroupListFragmentState.GetAllGroups)
-        Assert.assertEquals(
-            names[1],
-            (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList[0].name
-        )
-        Assert.assertEquals(
-            names[2],
-            (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList[1].name
-        )
-        Assert.assertEquals(
-            3,
-            (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList.size
-        )
-    }
+//    @Test
+//    fun WHEN_leave_group_list_size_should_decrease() {
+//        //prepare
+//        val names = listOf("nome", "teste", "teste com nome", "sem Nome")
+//        viewModel.groups.value.addAll(Array(names.size) { ShopGroup("${it}12123", names[it]) })
+//        val newGroupName = "nome do grupo"
+//
+//        //action
+//        viewModel.handle(ShopGroupListFragmentIntent.LeaveGroup(ShopGroup(name = newGroupName).apply {
+//            id = "012123"
+//        }))
+//
+//        //Assert
+//        Assert.assertTrue(viewModel.state.value is ShopGroupListFragmentState.GetAllGroups)
+//        Assert.assertEquals(
+//            names[1],
+//            (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList[0].name
+//        )
+//        Assert.assertEquals(
+//            names[2],
+//            (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList[1].name
+//        )
+//        Assert.assertEquals(
+//            3,
+//            (viewModel.state.value as ShopGroupListFragmentState.GetAllGroups).groupList.size
+//        )
+//    }
 
     @Test
     fun WHEN_join_group_list_size_should_increase() {
@@ -178,7 +179,7 @@ class ShopRepositoryMock : ShopGroupRepository {
         this.onGroupRemoved = onGroupRemoved
     }
 
-    override fun addGroupFB(group: ShopGroup) {
+    override fun addGroupFB(group: ShopGroup, userInfo: UserInfo) {
         onGroupAdded(ShopGroup(group.id, group.name))
     }
 
@@ -186,11 +187,11 @@ class ShopRepositoryMock : ShopGroupRepository {
         onGroupRemoved(group.id)
     }
 
-    override fun joinGroup(groupId: String, failedToJoin: (() -> Unit)?) {
+    override fun joinGroup(groupId: String, userInfo: UserInfo, failedToJoin: (() -> Unit)?) {
         onGroupAdded(ShopGroup(groupId, groupId))
     }
-
-    override fun leaveGroup(group: ShopGroup) {
-        onGroupRemoved(group.id)
-    }
+//
+//    override fun leaveGroup(group: ShopGroup) {
+//        onGroupRemoved(group.id)
+//    }
 }

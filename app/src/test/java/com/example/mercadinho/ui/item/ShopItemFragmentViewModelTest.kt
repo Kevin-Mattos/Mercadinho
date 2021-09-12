@@ -2,6 +2,7 @@ package com.example.mercadinho.ui.item
 
 import com.example.mercadinho.RxImmediateSchedulerRule
 import com.example.mercadinho.repository.ShopItemRepository
+import com.example.mercadinho.repository.entities.ShopGroup
 import com.example.mercadinho.repository.entities.ShopItem
 import com.example.mercadinho.viewmodels.ShopItemFragmentViewModel
 import com.google.firebase.database.DatabaseError
@@ -21,6 +22,7 @@ class ShopItemFragmentViewModelTest {
 
     @Before
     fun setup() {
+        viewModel.group = ShopGroup(name = "nome")
         viewModel.handle(ShopItemListFragmentIntent.GetAllItensById)
         val names = listOf("nome", "teste","teste com nome","sem Nome")
         viewModel.items.addAll(Array(names.size){ ShopItem("", names[it], false) })
@@ -105,14 +107,6 @@ class ShopRepositoryMock: ShopItemRepository {
     }
 
     fun getStuff(): MutableList<ShopItem> {
-//        val a = linkedMapOf<String, Any>()
-//
-//        items.forEach {
-//            a[it.id] = mapOf(
-//        "groupId" to it.id,
-//        "name" to it.name,
-//        "bought" to false)
-//        }
         return items
     }
 }
