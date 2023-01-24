@@ -1,33 +1,49 @@
 {
   "project_info": {
-    "project_number": "229819807260",
-    "project_id": "lista-de-compras-c0412",
-    "storage_bucket": "lista-de-compras-c0412.appspot.com"
+    "project_number": "307009218787",
+    "project_id": "mercadao-f6915",
+    "storage_bucket": "mercadao-f6915.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:229819807260:android:3bf1bdaf25fe67101a91d9",
+        "mobilesdk_app_id": "1:307009218787:android:0109842f3a3b92ffdffdd6",
         "android_client_info": {
-          "package_name": "com.example.mercadinho"
+          "package_name": "com.merc.mercadao"
         }
       },
       "oauth_client": [
         {
-          "client_id": "229819807260-gb714j3nl751dorhoa44ekstd632gd9a.apps.googleusercontent.com",
+          "client_id": "307009218787-5m4daqqna477qj7c5oiv5iul3pc5uv8j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.merc.mercadao",
+            "certificate_hash": "17d0098c76d8900978c69c5a755475c44e2fc4f1"
+          }
+        },
+        {
+          "client_id": "307009218787-q5br2q7v09jpk9f2in053hfcojfqcts9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.merc.mercadao",
+            "certificate_hash": "4714692fc14d667289ca792931f28c8d5b89aee0"
+          }
+        },
+        {
+          "client_id": "307009218787-i3l3a332o9k74unvojp8f2smknvmatom.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyARA0_x3C6-DYxR1w4PaCrbO-hgeNjqbj0"
+          "current_key": "AIzaSyBXPyh1t79KJWw35UJju5MFf_ywiG94yOA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "229819807260-gb714j3nl751dorhoa44ekstd632gd9a.apps.googleusercontent.com",
+              "client_id": "307009218787-i3l3a332o9k74unvojp8f2smknvmatom.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
