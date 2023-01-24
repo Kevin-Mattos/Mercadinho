@@ -39,6 +39,7 @@ class ShopGroupFragmentViewModel @Inject constructor(val shopRepository: ShopGro
             is ShopGroupListFragmentIntent.SearchGroup -> queryGroups(intent.query)
             is ShopGroupListFragmentIntent.JoinGroup -> joinGroup(intent.groupId)
             is ShopGroupListFragmentIntent.OnClickShare -> shareGroup(intent.group)
+            else -> {}
         }
     }
 

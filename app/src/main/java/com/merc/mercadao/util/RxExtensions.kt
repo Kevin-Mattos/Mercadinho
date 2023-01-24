@@ -14,12 +14,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import io.reactivex.rxjava3.subscribers.DisposableSubscriber
 
 
-fun <T> Single<T>.singleSubscribe(
+fun <T: Any> Single<T>.singleSubscribe(
     onLoading: ((Boolean) -> Unit)? = null,
     onError: ((Throwable?) -> Unit)? = null,
     onSuccess: ((T) -> Unit)? = null,
-    subscribeOnScheduler: Scheduler? = Schedulers.io(),
-    observeOnScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    subscribeOnScheduler: Scheduler = Schedulers.io(),
+    observeOnScheduler: Scheduler = AndroidSchedulers.mainThread()
 ) = subscribeOn(subscribeOnScheduler)
     .observeOn(observeOnScheduler)
     .doOnSubscribe { onLoading?.invoke(true) }
@@ -36,13 +36,13 @@ fun <T> Single<T>.singleSubscribe(
 
     })
 
-fun <T> Observable<T>.observableSubscribe(
+fun <T: Any> Observable<T>.observableSubscribe(
     onLoading: ((Boolean) -> Unit)? = null,
     onComplete: (() -> Unit)? = null,
     onNext: ((T) -> Unit)? = null,
-    onError: ((Throwable?) -> Unit)? = null,
-    subscribeOnScheduler: Scheduler? = Schedulers.io(),
-    observeOnScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    onError: ((Throwable) -> Unit)? = null,
+    subscribeOnScheduler: Scheduler = Schedulers.io(),
+    observeOnScheduler: Scheduler = AndroidSchedulers.mainThread()
 ) = subscribeOn(subscribeOnScheduler)
     .observeOn(observeOnScheduler)
     .doOnSubscribe { onLoading?.invoke(true) }
@@ -57,7 +57,7 @@ fun <T> Observable<T>.observableSubscribe(
             onComplete?.invoke()
         }
 
-        override fun onError(e: Throwable?) {
+        override fun onError(e: Throwable) {
             onError?.invoke(e)
         }
 
@@ -68,8 +68,8 @@ fun Completable.completableSubscribe(
     onLoading: ((Boolean) -> Unit)? = null,
     onError: ((Throwable?) -> Unit)? = null,
     onComplete: (() -> Unit)? = null,
-    subscribeOnScheduler: Scheduler? = Schedulers.io(),
-    observeOnScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    subscribeOnScheduler: Scheduler = Schedulers.io(),
+    observeOnScheduler: Scheduler = AndroidSchedulers.mainThread()
 ) = subscribeOn(subscribeOnScheduler)
     .observeOn(observeOnScheduler)
     .doOnSubscribe { onLoading?.invoke(true) }
@@ -88,7 +88,7 @@ fun Completable.completableSubscribe(
     })
 
 
-fun<A> Flowable<A>.flowableSubscribe(
+fun<A: Any> Flowable<A>.flowableSubscribe(
     onLoading: ((Boolean) -> Unit)? = null,
     onError: ((Throwable?) -> Unit)? = null,
     onComplete: (() -> Unit)? = null,
