@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.example.mercadinho.R
 
 fun Fragment.showToast(msg: String) {
-    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }
 
 fun Fragment.startActivitySlide(
