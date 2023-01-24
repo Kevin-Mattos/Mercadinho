@@ -25,13 +25,13 @@ android {
         demo {
             buildConfigField "int", "FOO", "1"
             buildConfigField "String", "FOO_STRING", "\"foo1\""
-            buildConfigField "String", "FIREBASE_REALTIME_URL", "\"https://mercadinho-a9c10-default-rtdb.firebaseio.com/\""
+            buildConfigField "String", "FIREBASE_REALTIME_URL", "\"https://mercadao-f6915-default-rtdb.firebaseio.com/\""
         }
 
         full {
             buildConfigField "int", "FOO", "2"
             buildConfigField "String", "FOO_STRING", "\"foo2\""
-            buildConfigField "String", "FIREBASE_REALTIME_URL", "\"https://mercadinho-a9c10-default-rtdb.firebaseio.com/\""
+            buildConfigField "String", "FIREBASE_REALTIME_URL", "\"https://mercadao-f6915-default-rtdb.firebaseio.com/\""
         }
 
     }

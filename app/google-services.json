@@ -1,38 +1,49 @@
 {
   "project_info": {
-    "project_number": "185395235001",
-    "firebase_url": "https://mercadinho-a9c10-default-rtdb.firebaseio.com",
-    "project_id": "mercadinho-a9c10",
-    "storage_bucket": "mercadinho-a9c10.appspot.com"
+    "project_number": "307009218787",
+    "project_id": "mercadao-f6915",
+    "storage_bucket": "mercadao-f6915.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:185395235001:android:421dbc4c6048d4c6533368",
+        "mobilesdk_app_id": "1:307009218787:android:0109842f3a3b92ffdffdd6",
         "android_client_info": {
           "package_name": "com.merc.mercadao"
         }
       },
       "oauth_client": [
         {
-          "client_id": "185395235001-s1qq1t1t2q5k1uban32diurqm1trmflu.apps.googleusercontent.com",
+          "client_id": "307009218787-5m4daqqna477qj7c5oiv5iul3pc5uv8j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.merc.mercadao",
             "certificate_hash": "17d0098c76d8900978c69c5a755475c44e2fc4f1"
           }
+        },
+        {
+          "client_id": "307009218787-q5br2q7v09jpk9f2in053hfcojfqcts9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.merc.mercadao",
+            "certificate_hash": "4714692fc14d667289ca792931f28c8d5b89aee0"
+          }
+        },
+        {
+          "client_id": "307009218787-i3l3a332o9k74unvojp8f2smknvmatom.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBoJwMuiiG0knMzfnCCXWeKvSBDcYtO_kI"
+          "current_key": "AIzaSyBXPyh1t79KJWw35UJju5MFf_ywiG94yOA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "185395235001-5jndtsc4qcsvuc6r63h41910b293ud80.apps.googleusercontent.com",
+              "client_id": "307009218787-i3l3a332o9k74unvojp8f2smknvmatom.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
