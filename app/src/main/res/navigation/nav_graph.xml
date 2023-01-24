@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/shopGroupFragment"
-        android:name="com.example.mercadinho.ui.groups.ShopGroupFragment"
+        android:name="com.colodori.mercadinho.ui.groups.ShopGroupFragment"
         android:label="@string/label_group"
         tools:layout="@layout/fragment_shop_group">
         <action
@@ -19,20 +19,20 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim">
         <argument
             android:name="group"
-            app:argType="com.example.mercadinho.repository.entities.ShopGroup"
+            app:argType="com.colodori.mercadinho.repository.entities.ShopGroup"
             />
         </action>
     </fragment>
 
     <fragment
         android:id="@+id/shopItemFragment"
-        android:name="com.example.mercadinho.ui.item.ShopItemFragment"
+        android:name="com.colodori.mercadinho.ui.item.ShopItemFragment"
         android:label="@string/label_item"
         tools:layout="@layout/fragment_shop_group">
 
         <argument
             android:name="group"
-            app:argType="com.example.mercadinho.repository.entities.ShopGroup"
+            app:argType="com.colodori.mercadinho.repository.entities.ShopGroup"
             />
 
     </fragment>

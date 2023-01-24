@@ -10,7 +10,7 @@ android {
     compileSdkVersion 32
 
     defaultConfig {
-        applicationId "com.example.mercadinho"
+        applicationId "com.colodori.mercadinho"
         minSdkVersion 23
         targetSdkVersion 32
         versionCode 1
