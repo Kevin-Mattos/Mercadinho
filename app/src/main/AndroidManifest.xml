@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.colodori.mercadinho" >
+    package="com.merc.mercadao" >
 
     <application
-        android:name="com.colodori.mercadinho.MyCustomApplication"
+        android:name="com.merc.mercadao.MyCustomApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true" >
         <activity
-            android:name="com.colodori.mercadinho.ui.login.LoginActivity"
+            android:name="com.merc.mercadao.ui.login.LoginActivity"
             android:exported="true"
             android:theme="@style/AcTheme" >
             <intent-filter>
@@ -20,16 +20,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.colodori.mercadinho.MainActivity"
+            android:name="com.merc.mercadao.MainActivity"
             android:theme="@style/AcTheme" >
         </activity>
         <activity
-            android:name="com.colodori.mercadinho.ui.groupdetails.GroupDetailsActivity"
+            android:name="com.merc.mercadao.ui.groupdetails.GroupDetailsActivity"
             android:theme="@style/AcTheme" >
         </activity>
 
         <activity
-            android:name="com.colodori.mercadinho.ui.item.editItem.EditItemActivity"
+            android:name="com.merc.mercadao.ui.item.editItem.EditItemActivity"
             android:theme="@style/AcTheme" >
         </activity>
     </application>

@@ -1,71 +1,38 @@
 {
   "project_info": {
-    "project_number": "229819807260",
-    "firebase_url": "https://lista-de-compras-c0412-default-rtdb.firebaseio.com",
-    "project_id": "lista-de-compras-c0412",
-    "storage_bucket": "lista-de-compras-c0412.appspot.com"
+    "project_number": "185395235001",
+    "firebase_url": "https://mercadinho-a9c10-default-rtdb.firebaseio.com",
+    "project_id": "mercadinho-a9c10",
+    "storage_bucket": "mercadinho-a9c10.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:229819807260:android:1426d9687db4b0381a91d9",
+        "mobilesdk_app_id": "1:185395235001:android:421dbc4c6048d4c6533368",
         "android_client_info": {
-          "package_name": "com.colodori.mercadinho"
+          "package_name": "com.merc.mercadao"
         }
       },
       "oauth_client": [
         {
-          "client_id": "229819807260-gb714j3nl751dorhoa44ekstd632gd9a.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyARA0_x3C6-DYxR1w4PaCrbO-hgeNjqbj0"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "229819807260-gb714j3nl751dorhoa44ekstd632gd9a.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:229819807260:android:3bf1bdaf25fe67101a91d9",
-        "android_client_info": {
-          "package_name": "com.example.mercadinho"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "229819807260-lq5n2h597v32po7pnulpfuof3hi86dh0.apps.googleusercontent.com",
+          "client_id": "185395235001-s1qq1t1t2q5k1uban32diurqm1trmflu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.mercadinho",
-            "certificate_hash": "41214279c3ebc5827b8cf06788001e7ccdc2c905"
+            "package_name": "com.merc.mercadao",
+            "certificate_hash": "17d0098c76d8900978c69c5a755475c44e2fc4f1"
           }
-        },
-        {
-          "client_id": "229819807260-gb714j3nl751dorhoa44ekstd632gd9a.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyARA0_x3C6-DYxR1w4PaCrbO-hgeNjqbj0"
+          "current_key": "AIzaSyBoJwMuiiG0knMzfnCCXWeKvSBDcYtO_kI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "229819807260-gb714j3nl751dorhoa44ekstd632gd9a.apps.googleusercontent.com",
+              "client_id": "185395235001-5jndtsc4qcsvuc6r63h41910b293ud80.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
