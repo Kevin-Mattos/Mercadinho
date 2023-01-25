@@ -1,0 +1,32 @@
+name: Release Build
+on: pull_request
+
+jobs:
+  Build:
+    name: Build/Sign APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build AAB
+        run: ./gradlew bundleRelease
+
+      - name: Sign AAB
+        id: sign_aab
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/bundle/fullRelease
+          signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEYSTOREPASSWORD }}
+          keyPassword: ${{ secrets.KEYPASSWORD }}
+          
+      - name: Deploy to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT}}
+          packageName: com.merc.mercadao
+          releaseFiles: app/build/outputs/bundle/fullRelease/app-full-release.aab
+          status: completed
+          track: internal
+          
