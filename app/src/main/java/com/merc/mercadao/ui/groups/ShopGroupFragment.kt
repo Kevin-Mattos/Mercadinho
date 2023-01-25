@@ -20,7 +20,6 @@ import com.merc.mercadao.ui.createCustomInputDialog
 import com.merc.mercadao.view.extensions.addTextListenter
 import com.merc.mercadao.view.extensions.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 
 @AndroidEntryPoint
