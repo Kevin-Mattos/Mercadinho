@@ -8,7 +8,7 @@ buildscript {
         rxAndroid = "3.0.0"
         rxKotlin = "3.0.1"
         hiltVersion = "2.44"
-        firebaseVersion = '4.3.10'
+        firebaseVersion = '4.3.14'
     }
     repositories {
         google()
