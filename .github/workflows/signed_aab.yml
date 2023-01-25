@@ -27,5 +27,6 @@ jobs:
           serviceAccountJsonPlainText: ${{secrets.SERVICE_ACCOUNT}}
           packageName: com.merc.mercadao
           releaseFiles: app/build/outputs/bundle/fullRelease/app-full-release.aab
+          status: completed
           track: internal
           
